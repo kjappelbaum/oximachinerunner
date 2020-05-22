@@ -1,6 +1,6 @@
 # oximachinerunner
 
-*oximachine for AiiDA lab*
+_oximachine for AiiDA lab_
 
 _**Warning:** This model works excellent on a test set but it might give fully unphysical predictions in some cases. Consider it in alpha phase_
 
@@ -18,4 +18,4 @@ _**Warning:** This model works excellent on a test set but it might give fully u
 
 - `votingclassifier.joblib` is the model that is currently deployed. It is a voting classifier with four different base estimators
 - `scaler.joblib` is the standard scaler
-- `KAJZIH_freeONLY.cif` and `ACODAA.cif` are some test structures. 
+- `KAJZIH_freeONLY.cif` and `ACODAA.cif` are some test structures.

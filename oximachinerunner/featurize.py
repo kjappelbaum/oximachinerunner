@@ -18,6 +18,7 @@ import pandas as pd
 from skmultilearn.model_selection import IterativeStratification
 from ase.io import read
 from pymatgen.io.ase import AseAtomsAdaptor
+from pymatgen.io.cif import CifParser
 from pymatgen.core import Element
 from matminer.featurizers.base import MultipleFeaturizer
 from matminer.utils.data import MagpieData
@@ -285,21 +286,17 @@ class GetFeatures:
         self.metal_indices = []
         self.features = []
         if self.path is not None:
-            self.outname = os.path.join(
-                self.outpath, "".join([Path(self.path).stem, ".pkl"])
-            )
+            self.outname = os.path.join(self.outpath, "".join([Path(self.path).stem, ".pkl"]))
         else:
             self.outname = os.path.join(
                 self.outpath,
                 "".join([self.structure.formula.replace(" ", "_"), ".pkl"]),
             )
-        self.featurizer = MultipleFeaturizer(
-            [
-                CrystalNNFingerprint.from_preset("ops"),
-                LocalPropertyStats.from_preset("interpretable"),
-                GaussianSymmFunc(),
-            ]
-        )
+        self.featurizer = MultipleFeaturizer([
+            CrystalNNFingerprint.from_preset("ops"),
+            LocalPropertyStats.from_preset("interpretable"),
+            GaussianSymmFunc(),
+        ])
 
     @classmethod
     def from_file(cls, structurepath, outpath):
@@ -309,9 +306,7 @@ class GetFeatures:
         s = GetFeatures.read_safe(structurepath)
         featureclass = cls(s, outpath)
         featureclass.path = structurepath
-        featureclass.outname = os.path.join(
-            featureclass.outpath, "".join([Path(featureclass.path).stem, ".pkl"])
-        )
+        featureclass.outname = os.path.join(featureclass.outpath, "".join([Path(featureclass.path).stem, ".pkl"]))
         return featureclass
 
     @classmethod
@@ -319,7 +314,6 @@ class GetFeatures:
         """
         Constructure for the webapp
         """
-        from pymatgen.io.cif import CifParser
 
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
@@ -343,9 +337,7 @@ class GetFeatures:
             warnings.simplefilter("ignore")
             try:
                 atoms = read(path)
-                structure = AseAtomsAdaptor.get_structure(
-                    atoms
-                )  # ase parser is a bit more robust
+                structure = AseAtomsAdaptor.get_structure(atoms)  # ase parser is a bit more robust
                 return structure
             except Exception:  # pylint: disable=broad-except
                 raise ValueError("Could not read structure")
@@ -374,17 +366,13 @@ class GetFeatures:
         """
         self.get_metal_sites()
         try:
-            self.logger.info(
-                "iterating over {} metal sites".format(len(self.metal_sites))
-            )
+            self.logger.info("iterating over {} metal sites".format(len(self.metal_sites)))
             for idx, metal_site in enumerate(self.metal_sites):
-                self.features.append(
-                    {
-                        "metal": metal_site.species_string,
-                        "feature": self.get_feature_vectors(self.metal_indices[idx]),
-                        "coords": metal_site.coords,
-                    }
-                )
+                self.features.append({
+                    "metal": metal_site.species_string,
+                    "feature": self.get_feature_vectors(self.metal_indices[idx]),
+                    "coords": metal_site.coords,
+                })
         except Exception as e:  # pylint: disable=broad-except
             self.logger.error("could not featurize because of {}".format(e))
 
@@ -394,22 +382,16 @@ class GetFeatures:
         """loops over sites if check ok"""
         self.get_metal_sites()
         try:
-            self.logger.info(
-                "iterating over {} metal sites".format(len(self.metal_sites))
-            )
+            self.logger.info("iterating over {} metal sites".format(len(self.metal_sites)))
             for idx, metal_site in enumerate(self.metal_sites):
-                self.features.append(
-                    {
-                        "metal": metal_site.species_string,
-                        "feature": self.get_feature_vectors(self.metal_indices[idx]),
-                        "coords": metal_site.coords,
-                    }
-                )
+                self.features.append({
+                    "metal": metal_site.species_string,
+                    "feature": self.get_feature_vectors(self.metal_indices[idx]),
+                    "coords": metal_site.coords,
+                })
             self.dump_features()
         except Exception as e:  # pylint: disable=broad-except
-            self.logger.error(
-                "could not featurize {} because of {}".format(self.path, e)
-            )
+            self.logger.error("could not featurize {} because of {}".format(self.path, e))
 
 
 class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-locals
@@ -470,8 +452,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
 
         for feature in self.selected_features:
             if feature not in list(  # pylint:disable=no-else-raise
-                FEATURE_RANGES_DICT.keys()
-            ):
+                    FEATURE_RANGES_DICT.keys()):
                 raise KeyError("Cannot understand {}".format(feature))
             else:
                 collectorlogger.info("will collect %s", feature)
@@ -483,23 +464,15 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         self.training_set_size = training_set_size
 
         self.picklefiles = glob(os.path.join(inpath, "*.pkl"))
-        self.forbidden_list = (
-            list(read_pickle(forbidden_picklepath))
-            if forbidden_picklepath is not None
-            else []
-        )
+        self.forbidden_list = (list(read_pickle(forbidden_picklepath)) if forbidden_picklepath is not None else [])
         self.forbidden_list.append("BOJSUO")  # this is te Re2O7 with dioxan
-        clashing = read_pickle(
-            "clashing_atoms.pkl"
-        )  # clashing atoms as determined by Mohamad
+        clashing = read_pickle("clashing_atoms.pkl")  # clashing atoms as determined by Mohamad
         self.forbidden_list.extend(clashing)
 
         self.forbidden_list.extend(extra_test_set)
         # just be double sure that we drop the ones we want to test on out
         if exclude_dir is not None:
-            all_to_exclude = [
-                Path(p).stem for p in glob(os.path.join(exclude_dir, "*.cif"))
-            ]
+            all_to_exclude = [Path(p).stem for p in glob(os.path.join(exclude_dir, "*.cif"))]
             self.forbidden_list.extend(all_to_exclude)
 
         # collectorlogger.info(
@@ -521,16 +494,11 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         self.racsdf = None
         self.selected_racs = selectedracs
         if (racsfile is not None) and (racsfile.endswith(".csv")):
-            collectorlogger.info(
-                "Using RACs, now reading them and adding them to the feature names"
-            )
-            collectorlogger.warning(
-                "Be carful, RACs and their implementation in this code are not thoroughly tested!"
-            )
+            collectorlogger.info("Using RACs, now reading them and adding them to the feature names")
+            collectorlogger.warning("Be carful, RACs and their implementation in this code are not thoroughly tested!")
             self.racsdf = pd.read_csv(racsfile)
             self.selected_features = list(self.selected_racs) + list(
-                self.selected_features
-            )  # to get the correct ordering
+                self.selected_features)  # to get the correct ordering
             for i, feature in enumerate(self.selected_racs):
                 FEATURE_RANGES_DICT[feature] = [(i, i + 1)]
 
@@ -591,15 +559,11 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         Returns:
             Tuple[np.array, np.array, list] -- numpy arrays of features and labels and list of names
         """
-        feature_list = FeatureCollector.create_feature_list(
-            self.picklefiles, self.forbidden_list, self.old_format
-        )
+        feature_list = FeatureCollector.create_feature_list(self.picklefiles, self.forbidden_list, self.old_format)
         label_raw = read_pickle(self.labelpath)
         # collectorlogger.info(f'found {len(label_raw)} labels')
         label_list = FeatureCollector.make_labels_table(label_raw)
-        df = FeatureCollector.create_clean_dataframe(
-            feature_list, label_list, self.drop_duplicates
-        )
+        df = FeatureCollector.create_clean_dataframe(feature_list, label_list, self.drop_duplicates)
 
         # shuffle dataframe for the next steps to ensure randomization
         df = df.sample(frac=1).reset_index(drop=True)
@@ -616,9 +580,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             # We do not want to leak this information from training into test set
             df["base_name"] = [n.strip("0123456789") for n in df["name"]]
             df_name_select = df.drop_duplicates(subset=["base_name"])
-            df_name_select["numbers"] = (
-                df_name_select["metal"].astype("category").cat.codes
-            )
+            df_name_select["numbers"] = (df_name_select["metal"].astype("category").cat.codes)
             stratifier = IterativeStratification(
                 n_splits=2,
                 order=2,
@@ -628,10 +590,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
                 ],
             )
             train_indexes, test_indexes = next(
-                stratifier.split(
-                    df_name_select, df_name_select[["oxidationstate", "numbers"]]
-                )
-            )
+                stratifier.split(df_name_select, df_name_select[["oxidationstate", "numbers"]]))
 
             train_names = df_name_select.iloc[train_indexes]
             test_names = df_name_select.iloc[test_indexes]
@@ -642,32 +601,20 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             df_test = df[df["base_name"].isin(test_names)]
 
             x, self.y, self.names = FeatureCollector.get_x_y_names(df_train)
-            self.x = FeatureCollector._select_features(
-                self.selected_features, x, self.outdir_helper, offset
-            )
+            self.x = FeatureCollector._select_features(self.selected_features, x, self.outdir_helper, offset)
 
-            x_test, self.y_test, self.names_test = FeatureCollector.get_x_y_names(
-                df_test
-            )
-            self.x_test = FeatureCollector._select_features(
-                self.selected_features, x_test, self.outdir_helper, offset
-            )
+            x_test, self.y_test, self.names_test = FeatureCollector.get_x_y_names(df_test)
+            self.x_test = FeatureCollector._select_features(self.selected_features, x_test, self.outdir_helper, offset)
 
         else:  # no seperate holdout set
             x, self.y, self.names = FeatureCollector.get_x_y_names(df)
-        if (
-            self.training_set_size
-        ):  # perform farthest point sampling to selet a fixed number of training points
-            collectorlogger.debug(
-                "will now perform farthest point sampling on the feature matrix"
-            )
+        if (self.training_set_size):  # perform farthest point sampling to selet a fixed number of training points
+            collectorlogger.debug("will now perform farthest point sampling on the feature matrix")
             # Write one additional holdout set
             assert self.training_set_size < len(df_train)
 
             x, self.y, self.names = FeatureCollector.get_x_y_names(df_train)
-            x = FeatureCollector._select_features(
-                self.selected_features, x, self.outdir_helper, offset
-            )
+            x = FeatureCollector._select_features(self.selected_features, x, self.outdir_helper, offset)
 
             # indices = greedy_farthest_point_samples(x, self.training_set_size)
             indices = apricot_select(x, self.training_set_size)
@@ -679,17 +626,12 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             x, self.y, self.names = FeatureCollector.get_x_y_names(df_train)
 
             df_validation = _df_train[~good_indices]
-            x_valid, self.y_valid, self.names_valid = FeatureCollector.get_x_y_names(
-                df_validation
-            )
+            x_valid, self.y_valid, self.names_valid = FeatureCollector.get_x_y_names(df_validation)
 
-            self.x_valid = FeatureCollector._select_features(
-                self.selected_features, x_valid, self.outdir_helper, offset
-            )
+            self.x_valid = FeatureCollector._select_features(self.selected_features, x_valid, self.outdir_helper,
+                                                             offset)
 
-        self.x = FeatureCollector._select_features(
-            self.selected_features, x, self.outdir_helper, offset
-        )
+        self.x = FeatureCollector._select_features(self.selected_features, x, self.outdir_helper, offset)
         collectorlogger.debug("the feature matrix shape is %s", self.x.shape)
 
     def dump_featurecollection(self) -> None:
@@ -753,9 +695,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         return any(name.rstrip("1234567890") in s for s in set(forbidden_list))
 
     @staticmethod
-    def create_feature_list(
-        picklefiles: list, forbidden_list: list, old_format: bool = True
-    ) -> list:
+    def create_feature_list(picklefiles: list, forbidden_list: list, old_format: bool = True) -> list:
         """Reads a list of pickle files into dictionary
 
         Arguments:
@@ -771,23 +711,14 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             forbidden_list = []
 
         for pickle_file in picklefiles:
-            if not FeatureCollector._partial_match_in_name(
-                Path(pickle_file).stem, forbidden_list
-            ):
+            if not FeatureCollector._partial_match_in_name(Path(pickle_file).stem, forbidden_list):
                 if not old_format:
-                    result_list.extend(
-                        FeatureCollector.create_dict_for_feature_table(pickle_file)
-                    )
+                    result_list.extend(FeatureCollector.create_dict_for_feature_table(pickle_file))
                 else:
-                    result_list.extend(
-                        FeatureCollector._create_dict_for_feature_table(pickle_file)
-                    )
+                    result_list.extend(FeatureCollector._create_dict_for_feature_table(pickle_file))
             else:
                 collectorlogger.info(
-                    "{} is in forbidden list and will not be considered for X, y, names".format(
-                        pickle_file
-                    )
-                )
+                    "{} is in forbidden list and will not be considered for X, y, names".format(pickle_file))
         return result_list
 
     @staticmethod
@@ -803,15 +734,11 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         Returns:
             list -- list of dictionaries of the form [{'name':, 'metal':, 'oxidationstate':}]
         """
-        collectorlogger.info(
-            "converting raw list of features into list of site dictionaries"
-        )
+        collectorlogger.info("converting raw list of features into list of site dictionaries")
         result_list = []
         for key, value in raw_labels.items():
             for metal, oxstate in value.items():
-                result_list.append(
-                    {"name": key, "metal": metal, "oxidationstate": oxstate[0]}
-                )
+                result_list.append({"name": key, "metal": metal, "oxidationstate": oxstate[0]})
         # collectorlogger.info(f'collected {len(result_list)} labels')
         return result_list
 
@@ -821,15 +748,9 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         """
         collectorlogger.info("Merging RACs into other features")
         df_selected_racs = FeatureCollector.selectracs(df_racs, selectedracs)
-        df_selected_racs["coordinate_x"] = df_selected_racs["coordinate_x"].astype(
-            np.int32
-        )
-        df_selected_racs["coordinate_y"] = df_selected_racs["coordinate_y"].astype(
-            np.int32
-        )
-        df_selected_racs["coordinate_z"] = df_selected_racs["coordinate_z"].astype(
-            np.int32
-        )
+        df_selected_racs["coordinate_x"] = df_selected_racs["coordinate_x"].astype(np.int32)
+        df_selected_racs["coordinate_y"] = df_selected_racs["coordinate_y"].astype(np.int32)
+        df_selected_racs["coordinate_z"] = df_selected_racs["coordinate_z"].astype(np.int32)
 
         df_features["coordinate_x"] = df_features["coordinate_x"].astype(np.int32)
         df_features["coordinate_y"] = df_features["coordinate_y"].astype(np.int32)
@@ -859,9 +780,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         return df_merged
 
     @staticmethod
-    def create_clean_dataframe(
-        feature_list: list, label_list: list, drop_duplicates: bool = True
-    ) -> pd.DataFrame:
+    def create_clean_dataframe(feature_list: list, label_list: list, drop_duplicates: bool = True) -> pd.DataFrame:
         """Merge the features and the labels on names and metals and drop entry rows
 
         Arguments:
@@ -884,14 +803,11 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
 
         collectorlogger.info(
             "the length of the feature df is {} the length of the label df is {} and the merged one is {}".format(
-                len(df_features), len(df_labels), len(df_merged)
-            )
-        )
+                len(df_features), len(df_labels), len(df_merged)))
         df_merged.dropna(inplace=True)
         if drop_duplicates:
-            df_cleaned = df_merged.loc[
-                df_merged.astype(str).drop_duplicates().index
-            ]  # to be sure that we do not accidently have same examples in training and test set
+            df_cleaned = df_merged.loc[df_merged.astype(str).drop_duplicates(
+            ).index]  # to be sure that we do not accidently have same examples in training and test set
         else:
             df_cleaned = df_merged
         return df_cleaned
@@ -992,7 +908,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             ]
             features = list(site["feature"])
             features.extend(metal_encoding)
-            result_dict = {
+            result_dict = {  # pylint:disable=unnecessary-comprehension
                 "metal": site["metal"],
                 "coordinate_x": int(site["coords"][0]),
                 "coordinate_y": int(site["coords"][1]),
