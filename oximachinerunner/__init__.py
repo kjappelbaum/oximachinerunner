@@ -13,6 +13,8 @@ __version__ = get_versions()['version']
 del get_versions
 from .featurize import GetFeatures, FeatureCollector
 from .utils import read_pickle
+import oximachinerunner.learnmofox as learnmofox
+sys.modules['learnmofox'] = learnmofox
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 MODEL = joblib.load(os.path.join(THIS_DIR, 'assets', 'votingclassifier.joblib'))

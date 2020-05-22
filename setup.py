@@ -47,9 +47,9 @@ REQUIRED = [
     'pandas',
     'sympy==1.5.1',
     'ase',
-    'scikit-learn==0.22',
+    'scikit-learn==0.21.3',
     'scikit-multilearn',
-    'pymatgen==2019.9.8',
+    "pymatgen==2019.9.8"
 ]
 
 # What packages are optional?
