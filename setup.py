@@ -9,6 +9,7 @@ import sys
 import subprocess
 
 from setuptools import setup
+import versioneer
 
 git_matminer = 'git+https://github.com/kjappelbaum/matminer.git@localpropertystats'
 
@@ -41,16 +42,13 @@ URL = 'https://github.com/kjappelbaum/oximachinerunner'
 EMAIL = 'kevin.jablonka@epfl.ch'
 AUTHOR = 'Kevin M. Jablonka, Daniele Ongari, Mohamad Moosavi, Berend Smit'
 REQUIRES_PYTHON = '>=3.5.0'
-VERSION = '0.1.0.-alpha'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
     'pymatgen',
     'ase',
-    'numeral',
     'apricot-select',
     'tqdm',
-    'click',
     'pandas',
     'scikit-learn==0.22',
     'scikit-multilearn',
@@ -58,8 +56,7 @@ REQUIRED = [
 
 # What packages are optional?
 EXTRAS = {
-    'testing': ['pytest'],
-    'linting': ['prospector', 'pre-commit', 'pylint'],
+    'dev': ['prospector', 'pre-commit', 'pylint', 'pytest', 'versioneer'],
 }
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -74,7 +71,8 @@ except FileNotFoundError:
 
 setup(
     name=NAME,
-    version=VERSION,
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     description=DESCRIPTION,
     long_description=long_description,
     long_description_content_type='text/markdown',

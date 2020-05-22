@@ -5,13 +5,14 @@ Some general utility functions for the oxidation state mining project
 """
 from __future__ import absolute_import
 from __future__ import print_function
-from six.moves import range
+from collections.abc import Iterable
+import json
+import pickle
 import os
 import warnings
 from pathlib import Path
-import json
-import pickle
-from collections.abc import Iterable
+from six.moves import range
+
 from tqdm import tqdm
 from pymatgen.core import Element
 from scipy.spatial import distance
@@ -22,7 +23,7 @@ from apricot import FacilityLocationSelection
 
 def read_pickle(filepath: str):
     """Does what it says. Nothing more and nothing less. Takes a pickle file path and unpickles it"""
-    with open(filepath, "rb") as fh:  # pylint: disable=invalid-name
+    with open(filepath, 'rb') as fh:  # pylint: disable=invalid-name
         result = pickle.load(fh)  # pylint: disable=invalid-name
     return result
 
@@ -54,7 +55,7 @@ def apricot_select(data, k, standardize=True, chunksize=20000):
     """Does 'farthest point sampling' with apricot.
     For memory limitation reasons it is chunked with a hardcoded chunksize. """
     if standardize:
-        print("standardizing data")
+        print('standardizing data')
         data = StandardScaler().fit_transform(data)
 
     data = data.astype(np.float64)
@@ -73,11 +74,11 @@ def apricot_select(data, k, standardize=True, chunksize=20000):
 
     to_select = int(k / num_chunks)
 
-    print(("Will use {} chunks of size {}".format(num_chunks, chunksize)))
+    print(('Will use {} chunks of size {}'.format(num_chunks, chunksize)))
     num_except = 0
 
     for d_ in tqdm(chunks(data, chunksize)):
-        print(("Current chunk has size {}".format(len(d_))))
+        print(('Current chunk has size {}'.format(len(d_))))
         if len(d_) > to_select:  # otherwise it makes no sense to select something
             try:
                 X_subset = FacilityLocationSelection(to_select).fit_transform(d_)
@@ -86,11 +87,11 @@ def apricot_select(data, k, standardize=True, chunksize=20000):
                 num_except += 1
                 if num_except > 1:  # pylint:disable=no-else-return
                     warnings.warn(
-                        "Could not perform diverse set selection for two attempts, will perform random choice")
+                        'Could not perform diverse set selection for two attempts, will perform random choice')
                     return np.random.choice(len(data), k, replace=False)
                 else:
-                    print("will use greedy select now")
-                    X_subset = _greedy_loop(d_, to_select, "euclidean")
+                    print('will use greedy select now')
+                    X_subset = _greedy_loop(d_, to_select, 'euclidean')
                     chunklist.append(X_subset)
     greedy_indices = []
     subset = np.vstack(chunklist)
@@ -128,7 +129,7 @@ def _greedy_loop(remaining, k, metric):
 
 def _greedy_farthest_point_samples_non_chunked(data,
                                                k: int,
-                                               metric: str = "euclidean",
+                                               metric: str = 'euclidean',
                                                standardize: bool = True) -> list:
     """
         Args:
@@ -168,7 +169,7 @@ def _greedy_farthest_point_samples_non_chunked(data,
 def greedy_farthest_point_samples(
     data,
     k: int,
-    metric: str = "euclidean",
+    metric: str = 'euclidean',
     standardize: bool = True,
     chunked: bool = False,
 ) -> list:
@@ -193,7 +194,7 @@ def greedy_farthest_point_samples(
     return result
 
 
-def _greedy_farthest_point_samples_chunked(data, k: int, metric: str = "euclidean", standardize: bool = True) -> list:
+def _greedy_farthest_point_samples_chunked(data, k: int, metric: str = 'euclidean', standardize: bool = True) -> list:
     """
         Args:
             data (np.array)
@@ -221,7 +222,7 @@ def _greedy_farthest_point_samples_chunked(data, k: int, metric: str = "euclidea
     # memory intensive
     i = 0
     for d_ in chunks(data, chunksize):
-        print(("chunk {} out of {}".format(i, num_chunks)))
+        print(('chunk {} out of {}'.format(i, num_chunks)))
         d = d_
         if len(d) > 2:
             index = np.random.randint(0, len(d) - 1)
@@ -254,8 +255,8 @@ class SymbolNameDict:
 
     def __init__(self):
         with open(
-                os.path.join(Path(__file__).absolute().parent, "assets", "periodic_table.json"),
-                "r",
+                os.path.join(Path(__file__).absolute().parent, 'assets', 'periodic_table.json'),
+                'r',
         ) as periodic_table_file:
             self.pt_data = json.load(periodic_table_file)
         self.symbol_name_dict = {}
@@ -267,8 +268,8 @@ class SymbolNameDict:
         for key, value in self.pt_data.items():
             if only_metal:
                 if Element(key).is_metal:
-                    self.symbol_name_dict[key] = value["Name"].lower()
+                    self.symbol_name_dict[key] = value['Name'].lower()
             else:
-                self.symbol_name_dict[key] = value["Name"].lower()
+                self.symbol_name_dict[key] = value['Name'].lower()
 
         return self.symbol_name_dict

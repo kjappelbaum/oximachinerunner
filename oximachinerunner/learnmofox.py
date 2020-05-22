@@ -3,9 +3,10 @@
 """Copy of the custom classifier class"""
 from __future__ import absolute_import
 from __future__ import print_function
-import numpy as np
 import warnings
-from sklearn.ensemble.voting import _parallel_fit_estimator
+import numpy as np
+# ToDo: this function _parallel_fit_estimator changed in later versions.
+from sklearn.ensemble._base import _parallel_fit_estimator
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.calibration import _CalibratedClassifier
 from scipy.stats import zscore
@@ -174,8 +175,8 @@ class VotingClassifier:
         self._check_is_fitted()
         if self.voting == 'soft':
             return self._collect_probas(X)
-        else:
-            return self._predict(X)
+
+        return self._predict(X)
 
     def _predict(self, X):
         """Collect results from clf.predict calls. """

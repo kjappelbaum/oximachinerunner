@@ -8,6 +8,10 @@ from typing import Union
 from pymatgen import Structure
 import joblib
 import numpy as np
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
+
 from . import utils
 from .featurize import GetFeatures, FeatureCollector
 from .utils import read_pickle
@@ -93,7 +97,3 @@ def run_oximachine(cif: str) -> Union[list, list, list]:
     prediction = _make_predictions(X)  # pylint:disable=protected-access
 
     return prediction, metal_indices, metal_symbols
-
-from ._version import get_versions
-__version__ = get_versions()['version']
-del get_versions

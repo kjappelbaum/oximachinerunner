@@ -1,12 +1,13 @@
 # oximachinerunner
 
-_oximachine for AiiDA lab_
+_oximachine for AiiDA lab_: Core functionalities of oximachine with stripped dependencies.
 
 _**Warning:** This model works excellent on a test set but it might give fully unphysical predictions in some cases. Consider it in alpha phase_
 
 - It is good to know where it fails
 - We work on improving the model by training it on a larger subset of the CSD with a new architecture
 - The featurization can be slow in some cases. In practice, it is best to get the smallest possible cell of a clean structure.
+- There is still one dependency on one of my forks of a well-known package.
 
 ## features not deployed for AiIDA lab
 
