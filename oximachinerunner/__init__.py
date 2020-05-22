@@ -2,16 +2,16 @@ import os
 from typing import Union
 from learnmofox import utils
 from pymatgen import Structure
-from mine_mof_oxstate.featurize import GetFeatures, FeatureCollector
-from mine_mof_oxstate.utils import read_pickle
+from .featurize import GetFeatures, FeatureCollector
+from .utils import read_pickle
 import numpy as np
 import joblib
 import sys
 
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
-MODEL = joblib.load(os.path.join(THIS_DIR, "votingclassifier.joblib"))
-SCALER = joblib.load(os.path.join(THIS_DIR, "scaler_0.joblib"))
+MODEL = joblib.load(os.path.join(THIS_DIR, "assets", "votingclassifier.joblib"))
+SCALER = joblib.load(os.path.join(THIS_DIR, , "assets","scaler_0.joblib"))
 
 # this is dirty but needed due to the way in which I wrote my model class and saved it.
 # I can save it more clever in the future, but it works for now
@@ -76,7 +76,7 @@ def run_oximachine(cif: str) -> Union[list, list, list]:
     """Run the oximachine on one structure
 
     Args:
-        cif (str): Filepath to cif file
+        cif (str): Filepath to cif 
 
     Returns:
         Union[list, list, list]: list of oxidation states, list of metal indices, 

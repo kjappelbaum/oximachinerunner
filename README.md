@@ -1,4 +1,6 @@
-# oximachine for AiiDA lab
+# oximachinerunner
+
+*oximachine for AiiDA lab*
 
 _**Warning:** This model works excellent on a test set but it might give fully unphysical predictions in some cases. Consider it in alpha phase_
 
