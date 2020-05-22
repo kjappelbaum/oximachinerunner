@@ -11,20 +11,12 @@ import numpy as np
 from ._version import get_versions
 __version__ = get_versions()['version']
 del get_versions
-
-from . import utils
-from . import learnmofox
 from .featurize import GetFeatures, FeatureCollector
 from .utils import read_pickle
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 MODEL = joblib.load(os.path.join(THIS_DIR, 'assets', 'votingclassifier.joblib'))
 SCALER = joblib.load(os.path.join(THIS_DIR, 'assets', 'scaler_0.joblib'))
-
-# this is dirty but needed due to the way in which I wrote my model class and saved it.
-# I can save it more clever in the future, but it works for now
-sys.modules['utils'] = utils
-sys.modules['learnmofox'] = learnmofox
 
 # those global vars are for now hard coded for this model
 METAL_CENTER_FEATURES = [
