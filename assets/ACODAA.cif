@@ -1,0 +1,66 @@
+#======================================================================
+
+# CRYSTAL DATA
+
+#----------------------------------------------------------------------
+
+data_VESTA_phase_1
+
+
+_chemical_name_common                  'C6 H4 Fe N4'
+_cell_length_a                         9.205(2)
+_cell_length_b                         9.205(2)
+_cell_length_c                         7.2374(19)
+_cell_angle_alpha                      90
+_cell_angle_beta                       90
+_cell_angle_gamma                      90
+_space_group_name_H-M_alt              'P 42/m m c'
+_space_group_IT_number                 131
+
+loop_
+_space_group_symop_operation_xyz
+   'x, y, z'
+   '-x, -y, -z'
+   '-x, -y, z'
+   'x, y, -z'
+   '-y, x, z+1/2'
+   'y, -x, -z+1/2'
+   'y, -x, z+1/2'
+   '-y, x, -z+1/2'
+   '-x, y, -z'
+   'x, -y, z'
+   'x, -y, -z'
+   '-x, y, z'
+   'y, x, -z+1/2'
+   '-y, -x, z+1/2'
+   '-y, -x, -z+1/2'
+   'y, x, z+1/2'
+
+loop_
+   _atom_site_label
+   _atom_site_occupancy
+   _atom_site_fract_x
+   _atom_site_fract_y
+   _atom_site_fract_z
+   _atom_site_adp_type
+   _atom_site_U_iso_or_equiv
+   _atom_site_type_symbol
+   Fe1        1.0     0.500000      0.500000      0.250000     Uiso  0.043933 Fe
+   N1         1.0     0.500000      0.6840(10)    0.4056(13)   Uiso  0.055667 N
+   C1         1.0     0.500000      0.918(2)      0.500000     Uiso  0.075667 C
+   C2         1.0     0.500000      0.8243(14)    0.352(2)     Uiso  0.074333 C
+   H2         1.0     0.500000      0.854700      0.226200     Uiso  0.089000 H
+
+loop_
+   _atom_site_aniso_label
+   _atom_site_aniso_U_11
+   _atom_site_aniso_U_22
+   _atom_site_aniso_U_33
+   _atom_site_aniso_U_12
+   _atom_site_aniso_U_13
+   _atom_site_aniso_U_23
+   Fe1	 0.04790  0.04790  0.03600  0.00000  0.00000  0.00000
+   N1	 0.07000  0.04400  0.05300  0.00000  0.00000 -0.00500
+   C1	 0.10300  0.08700  0.03700  0.00000  0.00000  0.00000
+   C2	 0.11400  0.06200  0.04700  0.00000  0.00000 -0.00400
+   H2	 0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
