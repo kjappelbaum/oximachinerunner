@@ -42,7 +42,7 @@ REQUIRES_PYTHON = '>=3.5.0'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    'apricot-select==0.4.0', 'tqdm', 'pandas', 'sympy==1.5.1', 'ase', 'scikit-learn==0.21.3', 'scikit-multilearn',
+    'six','apricot-select==0.4.0', 'tqdm', 'pandas', 'sympy==1.5.1', 'ase', 'scikit-learn==0.21.3', 'scikit-multilearn',
     "pymatgen==2019.9.8"
 ]
 
