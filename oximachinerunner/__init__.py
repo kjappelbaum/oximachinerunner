@@ -93,3 +93,7 @@ def run_oximachine(cif: str) -> Union[list, list, list]:
     prediction = _make_predictions(X)  # pylint:disable=protected-access
 
     return prediction, metal_indices, metal_symbols
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
