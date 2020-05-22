@@ -1,4 +1,5 @@
 {
     "python.pythonPath": "/Users/kevinmaikjablonka/opt/miniconda3/envs/oximachine_aiidalab/bin/python",
-    "python.linting.pylintEnabled": true
+    "python.linting.pylintEnabled": true,
+    "python.formatting.provider": "yapf"
 }

@@ -183,4 +183,4 @@ class VotingClassifier:
         if not self.calibrated:
             warnings.warn('Using uncalibrated classififier')
         return np.asarray([np.argmax(clf.predict_proba(X), axis=1) for clf in self.estimators
-                          ]).T  # workaround since _Classifier has no predictt method
+                          ]).T  # workaround since _Classifier has no predict method

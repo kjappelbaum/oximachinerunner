@@ -6,8 +6,10 @@ _**Warning:** This model works excellent on a test set but it might give fully u
 
 - It is good to know where it fails
 - We work on improving the model by training it on a larger subset of the CSD with a new architecture
+
 - The featurization can be slow in some cases. In practice, it is best to get the smallest possible cell of a clean structure.
 - There is still one dependency on one of my forks of a well-known package.
+- The package is slow
 
 ## features not deployed for AiIDA lab
 

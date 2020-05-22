@@ -11,29 +11,26 @@ import subprocess
 from setuptools import setup
 import versioneer
 
-git_matminer = 'git+https://github.com/kjappelbaum/matminer.git@localpropertystats'
+git_matminer = 'git+git://github.com/kjappelbaum/matminer.git@9d7cd6bc0ad26eaf2246e7e96d40069c550b53a5#egg=matminer'
 
-try:
-    import matminer  # pylint:disable=unused-import
-except Exception:  # pylint:disable=broad-except
-    if '--user' in sys.argv:
-        subprocess.run(
-            [
-                sys.executable,
-                '-m',
-                'pip',
-                'install',
-                '--upgrade',
-                '--user',
-                git_matminer,
-            ],
-            check=False,
-        )
-    else:
-        subprocess.run(
-            [sys.executable, '-m', 'pip', 'install', '--upgrade', git_matminer],
-            check=False,
-        )
+if '--user' in sys.argv:
+    subprocess.run(
+        [
+            sys.executable,
+            '-m',
+            'pip',
+            'install',
+            '--upgrade',
+            '--user',
+            git_matminer,
+        ],
+        check=False,
+    )
+else:
+    subprocess.run(
+        [sys.executable, '-m', 'pip', 'install', '--upgrade', git_matminer],
+        check=False,
+    )
 
 # Package meta-data.
 NAME = 'oximachinerunner'
@@ -45,13 +42,14 @@ REQUIRES_PYTHON = '>=3.5.0'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    'pymatgen',
-    'ase',
-    'apricot-select',
+    'apricot-select==0.4.0',
     'tqdm',
     'pandas',
+    'sympy==1.5.1',
+    'ase',
     'scikit-learn==0.22',
     'scikit-multilearn',
+    'pymatgen==2019.9.8',
 ]
 
 # What packages are optional?
