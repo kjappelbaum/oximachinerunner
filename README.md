@@ -12,6 +12,7 @@ _**Warning:** This model works excellent on a test set but it might give fully u
 - The featurization can be slow in some cases. In practice, it is best to get the smallest possible cell of a clean structure.
 - There is still one dependency on one of my forks of a well-known package.
 - The package is slow
+- For compatability and reproducibility we need to pin an old scikit-learn version
 
 ## features not deployed for AiIDA lab
 
