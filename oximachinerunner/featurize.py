@@ -1,40 +1,32 @@
 # -*- coding: utf-8 -*-
-# pylint:disable=invalid-name, logging-format-interpolation, logging-fstring-interpolation, line-too-long, dangerous-default-value, too-many-lines
+# pylint:disable=invalid-name, logging-format-interpolation, logging-fstring-interpolation, line-too-long, dangerous-default-value, too-many-lines, anomalous-backslash-in-string
 """Featurization functions for the oxidation state mining project. Wrapper around matminer"""
-from __future__ import absolute_import
-from __future__ import print_function
-from pathlib import Path
-import os
-from glob import glob
-import pickle
-import logging
-import warnings
-warnings.simplefilter("ignore")
+from __future__ import absolute_import, print_function
 
+import logging
+import os
+import pickle
+import warnings
+from glob import glob
+from pathlib import Path
 # from collections import defaultdict
 from typing import Tuple
 
 import numpy as np
 import pandas as pd
 from ase.io import read
+from matminer.featurizers.base import BaseFeaturizer, MultipleFeaturizer
+from matminer.featurizers.site import CrystalNNFingerprint, GaussianSymmFunc
+from matminer.utils.caching import get_nearest_neighbors
+from matminer.utils.data import MagpieData
+from pymatgen.analysis.local_env import VoronoiNN
+from pymatgen.core import Element
 from pymatgen.io.ase import AseAtomsAdaptor
 from pymatgen.io.cif import CifParser
-from pymatgen.core import Element
-from pymatgen.analysis.local_env import  VoronoiNN
-from matminer.featurizers.base import BaseFeaturizer
-from matminer.featurizers.base import MultipleFeaturizer
-from matminer.utils.data import MagpieData
-from matminer.utils.caching import get_nearest_neighbors
-from matminer.featurizers.site import (
-    CrystalNNFingerprint,
-    GaussianSymmFunc,
-)
-from matminer.utils.data import MagpieData
 
-from .utils import (
-    read_pickle,
-    diff_to_18e,
-)
+from .utils import diff_to_18e, read_pickle
+
+warnings.simplefilter('ignore')
 
 extra_test_set = []
 
@@ -275,15 +267,13 @@ class LocalPropertyStats(BaseFeaturizer):
     difference.
 
     Features:
-        - "local property stat in [property]" 
+        - "local property stat in [property]"
 
     References:
          `Ward et al. _PRB_ 2017 <http://link.aps.org/doi/10.1103/PhysRevB.96.024104>`_
     """
 
-    def __init__(
-        self, data_source=MagpieData(), weight="area", properties=("Electronegativity",)
-    ):
+    def __init__(self, data_source=MagpieData(), weight='area', properties=('Electronegativity',)):
         """ Initialize the featurizer
 
         Args:
@@ -308,31 +298,31 @@ class LocalPropertyStats(BaseFeaturizer):
             preset (str) - Name of preset
         """
 
-        if preset == "interpretable":
+        if preset == 'interpretable':  # pylint:disable=no-else-return
             return LocalPropertyStats(
                 data_source=MagpieData(),
                 properties=[
-                    "MendeleevNumber",
-                    "Column",
-                    "Row",
-                    "Electronegativity",
-                    "NsValence",
-                    "NpValence",
-                    "NdValence",
-                    "NfValence",
-                    "NValence",
-                    "NsUnfilled",
-                    "NpUnfilled",
-                    "NdUnfilled",
-                    "NfUnfilled",
-                    "NUnfilled",
-                    "GSbandgap",
+                    'MendeleevNumber',
+                    'Column',
+                    'Row',
+                    'Electronegativity',
+                    'NsValence',
+                    'NpValence',
+                    'NdValence',
+                    'NfValence',
+                    'NValence',
+                    'NsUnfilled',
+                    'NpUnfilled',
+                    'NdUnfilled',
+                    'NfUnfilled',
+                    'NUnfilled',
+                    'GSbandgap',
                 ],
             )
         else:
-            raise ValueError("Unrecognized preset: " + preset)
+            raise ValueError('Unrecognized preset: ' + preset)
 
-    def featurize(self, strc, idx):
+    def featurize(self, strc, idx):  # pylint:disable=arguments-differ
         # Get the targeted site
         my_site = strc[idx]
 
@@ -340,8 +330,8 @@ class LocalPropertyStats(BaseFeaturizer):
         nn = get_nearest_neighbors(VoronoiNN(weight=self.weight), strc, idx)
 
         # Get the element and weight of each site
-        elems = [n["site"].specie for n in nn]
-        weights = [n["weight"] for n in nn]
+        elems = [n['site'].specie for n in nn]
+        weights = [n['weight'] for n in nn]
 
         # Compute the difference for each property
         output = np.zeros((len(self.properties),))
@@ -353,51 +343,46 @@ class LocalPropertyStats(BaseFeaturizer):
         for i, p in enumerate(self.properties):
             my_prop = self.data_source.get_elemental_property(my_site.specie, p)
             n_props = self.data_source.get_elemental_properties(elems, p)
-            output[i] = (
-                np.dot(weights, np.abs(np.subtract(n_props, my_prop))) / total_weight
-            )
-            output_signed[i] = (
-                np.dot(weights, np.subtract(n_props, my_prop)) / total_weight
-            )
+            output[i] = (np.dot(weights, np.abs(np.subtract(n_props, my_prop))) / total_weight)
+            output_signed[i] = (np.dot(weights, np.subtract(n_props, my_prop)) / total_weight)
             output_max[i] = np.max(np.subtract(n_props, my_prop))
             output_min[i] = np.min(np.subtract(n_props, my_prop))
         return np.hstack([output, output_signed, output_max, output_min])
 
     def feature_labels(self):
 
-        return (
-            ["local difference in " + p for p in self.properties]
-            + ["local signed difference in " + p for p in self.properties]
-            + ["maximum local difference in " + p for p in self.properties]
-            + ["minimum local difference in " + p for p in self.properties]
-        )
+        return (['local difference in ' + p for p in self.properties] +
+                ['local signed difference in ' + p for p in self.properties] +
+                ['maximum local difference in ' + p for p in self.properties] +
+                ['minimum local difference in ' + p for p in self.properties])
 
     def citations(self):
         return [
-            "@article{Ward2017,"
-            "author = {Ward, Logan and Liu, Ruoqian "
-            "and Krishna, Amar and Hegde, Vinay I. "
-            "and Agrawal, Ankit and Choudhary, Alok "
-            "and Wolverton, Chris},"
-            "doi = {10.1103/PhysRevB.96.024104},"
-            "journal = {Physical Review B},"
-            "pages = {024104},"
-            "title = {{Including crystal structure attributes "
-            "in machine learning models of formation energies "
-            "via Voronoi tessellations}},"
-            "url = {http://link.aps.org/doi/10.1103/PhysRevB.96.014107},"
-            "volume = {96},year = {2017}}",
-            "@article{jong_chen_notestine_persson_ceder_jain_asta_gamst_2016,"
-            "title={A Statistical Learning Framework for Materials Science: "
-            "Application to Elastic Moduli of k-nary Inorganic Polycrystalline Compounds}, "
-            "volume={6}, DOI={10.1038/srep34256}, number={1}, journal={Scientific Reports}, "
-            "author={Jong, Maarten De and Chen, Wei and Notestine, Randy and Persson, "
-            "Kristin and Ceder, Gerbrand and Jain, Anubhav and Asta, Mark and Gamst, Anthony}, "
-            "year={2016}, month={Mar}}",
+            '@article{Ward2017,'
+            'author = {Ward, Logan and Liu, Ruoqian '
+            'and Krishna, Amar and Hegde, Vinay I. '
+            'and Agrawal, Ankit and Choudhary, Alok '
+            'and Wolverton, Chris},'
+            'doi = {10.1103/PhysRevB.96.024104},'
+            'journal = {Physical Review B},'
+            'pages = {024104},'
+            'title = {{Including crystal structure attributes '
+            'in machine learning models of formation energies '
+            'via Voronoi tessellations}},'
+            'url = {http://link.aps.org/doi/10.1103/PhysRevB.96.014107},'
+            'volume = {96},year = {2017}}',
+            '@article{jong_chen_notestine_persson_ceder_jain_asta_gamst_2016,'
+            'title={A Statistical Learning Framework for Materials Science: '
+            'Application to Elastic Moduli of k-nary Inorganic Polycrystalline Compounds}, '
+            'volume={6}, DOI={10.1038/srep34256}, number={1}, journal={Scientific Reports}, '
+            'author={Jong, Maarten De and Chen, Wei and Notestine, Randy and Persson, '
+            'Kristin and Ceder, Gerbrand and Jain, Anubhav and Asta, Mark and Gamst, Anthony}, '
+            'year={2016}, month={Mar}}',
         ]
 
     def implementors(self):
-        return ["Kevin Jablonka"]
+        return ['Kevin Jablonka']
+
 
 class GetFeatures:
     """Featurizer"""
@@ -716,7 +701,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             offset = len(self.selected_racs)
             df = FeatureCollector.merge_racs_frame(df, self.racsdf, self.selected_racs)
 
-        if self.percentage_holdout > 0:
+        if self.percentage_holdout > 0:  # pylint:disable=no-else-raise
             raise NotImplementedError('Use the full version of minemofox')
 
         else:  # no seperate holdout set

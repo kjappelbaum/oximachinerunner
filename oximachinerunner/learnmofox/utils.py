@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 # pylint:disable=invalid-name
 """Copy of the custom classifier class"""
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
+
 import warnings
+
 import numpy as np
+from scipy.stats import zscore
+from sklearn.calibration import _CalibratedClassifier
 # ToDo: this function _parallel_fit_estimator changed in later versions.
 from sklearn.ensemble.voting import _parallel_fit_estimator
 from sklearn.preprocessing import LabelBinarizer
-from sklearn.calibration import _CalibratedClassifier
-from scipy.stats import zscore
 
 
 class VotingClassifier:

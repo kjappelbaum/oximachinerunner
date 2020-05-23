@@ -53,12 +53,11 @@ repos:
 
   - repo: local
     hooks:
-      - id: prospector
-        exclude: versioneer.py|oximachinerunner/_version.py
+      - id: isort
+        name: isort
         language: system
-        types: [file, python]
-        name: prospector
-        entry: prospector
+        types: [python]
+        entry: isort
       - id: yapf
         exclude: versioneer.py|oximachinerunner/_version.py
         name: yapf
@@ -66,3 +65,9 @@ repos:
         language: system
         types: [python]
         args: ["-i"]
+      - id: prospector
+        exclude: versioneer.py|oximachinerunner/_version.py
+        language: system
+        types: [file, python]
+        name: prospector
+        entry: prospector

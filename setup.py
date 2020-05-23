@@ -3,12 +3,12 @@
 # pylint: disable=invalid-name, missing-docstring
 
 from __future__ import absolute_import
+
 import io
 import os
-import sys
-import subprocess
 
 from setuptools import setup
+
 import versioneer
 
 # Package meta-data.
@@ -17,14 +17,14 @@ DESCRIPTION = 'Run the oximachine'
 URL = 'https://github.com/kjappelbaum/oximachinerunner'
 EMAIL = 'kevin.jablonka@epfl.ch'
 AUTHOR = 'Kevin M. Jablonka, Daniele Ongari, Mohamad Moosavi, Berend Smit'
-REQUIRES_PYTHON = '>=3.5.0'
+REQUIRES_PYTHON = '>=3.6.0,<3.7.0'
 
 # What packages are required for this module to be executed?
 REQUIRED = ['six', 'tqdm', 'matminer==0.6.3', 'scikit-learn==0.21.3', 'pandas>=0.22', 'sympy==1.5.1', 'ase', 'pymatgen']
 
 # What packages are optional?
 EXTRAS = {
-    'dev': ['prospector', 'pre-commit', 'pylint', 'pytest', 'versioneer'],
+    'dev': ['prospector', 'pre-commit', 'pylint', 'pytest', 'versioneer', 'isort'],
 }
 
 here = os.path.abspath(os.path.dirname(__file__))

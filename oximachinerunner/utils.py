@@ -3,19 +3,16 @@
 """
 Some general utility functions for the oxidation state mining project
 """
-from __future__ import absolute_import
-from __future__ import print_function
-from collections.abc import Iterable
-import json
-import pickle
-import os
-import warnings
-from pathlib import Path
-from six.moves import range
+from __future__ import absolute_import, print_function
 
-from tqdm import tqdm
-from pymatgen.core import Element
+import json
+import os
+import pickle
+from collections.abc import Iterable
+from pathlib import Path
+
 import numpy as np
+from pymatgen.core import Element
 
 
 def read_pickle(filepath: str):
