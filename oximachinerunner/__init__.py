@@ -2,18 +2,23 @@
 # pylint:disable=invalid-name
 """Implements methods to use oximachine as part of a Python package"""
 from __future__ import absolute_import
+
 import os
 import sys
 from typing import Union
-from pymatgen import Structure
+
 import joblib
 import numpy as np
+from pymatgen import Structure
+
+import oximachinerunner.learnmofox as learnmofox
+
 from ._version import get_versions
+from .featurize import FeatureCollector, GetFeatures
+from .utils import read_pickle
+
 __version__ = get_versions()['version']
 del get_versions
-from .featurize import GetFeatures, FeatureCollector
-from .utils import read_pickle
-import oximachinerunner.learnmofox as learnmofox
 sys.modules['learnmofox'] = learnmofox
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
