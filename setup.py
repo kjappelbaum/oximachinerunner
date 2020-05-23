@@ -20,7 +20,7 @@ AUTHOR = 'Kevin M. Jablonka, Daniele Ongari, Mohamad Moosavi, Berend Smit'
 REQUIRES_PYTHON = '>=3.5.0'
 
 # What packages are required for this module to be executed?
-REQUIRED = ['six', 'tqdm', 'matminer' 'scikit-learn==0.21.3', 'pandas>=0.22', 'sympy==1.5.1', 'ase', 'pymatgen']
+REQUIRED = ['six', 'tqdm', 'matminer==0.6.3', 'scikit-learn==0.21.3', 'pandas>=0.22', 'sympy==1.5.1', 'ase', 'pymatgen']
 
 # What packages are optional?
 EXTRAS = {
