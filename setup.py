@@ -17,7 +17,7 @@ DESCRIPTION = 'Run the oximachine'
 URL = 'https://github.com/kjappelbaum/oximachinerunner'
 EMAIL = 'kevin.jablonka@epfl.ch'
 AUTHOR = 'Kevin M. Jablonka, Daniele Ongari, Mohamad Moosavi, Berend Smit'
-REQUIRES_PYTHON = '>=3.6.0,<3.7.0'
+REQUIRES_PYTHON = '>=3.6.0,<3.8.0'
 
 # What packages are required for this module to be executed?
 REQUIRED = ['six', 'tqdm', 'matminer==0.6.3', 'scikit-learn==0.21.3', 'pandas>=0.22', 'sympy==1.5.1', 'ase', 'pymatgen']
