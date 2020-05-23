@@ -16,7 +16,6 @@ from typing import Tuple
 
 import numpy as np
 import pandas as pd
-from skmultilearn.model_selection import IterativeStratification
 from ase.io import read
 from pymatgen.io.ase import AseAtomsAdaptor
 from pymatgen.io.cif import CifParser
@@ -30,8 +29,6 @@ from matminer.featurizers.site import (
 )
 from .utils import (
     read_pickle,
-    # greedy_farthest_point_samples, # not used anymore probably because slower than apricot
-    apricot_select,
     diff_to_18e,
 )
 
@@ -576,61 +573,12 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             df = FeatureCollector.merge_racs_frame(df, self.racsdf, self.selected_racs)
 
         if self.percentage_holdout > 0:
-            # Make stratified split that also makes sure that no structure from the training set is in the test set
-            # This is important as the chmemical enviornments in structures can be quite similar (parsiomny principle of Pauling)
-            # We do not want to leak this information from training into test set
-            df['base_name'] = [n.strip('0123456789') for n in df['name']]
-            df_name_select = df.drop_duplicates(subset=['base_name'])
-            df_name_select['numbers'] = (df_name_select['metal'].astype('category').cat.codes)
-            stratifier = IterativeStratification(
-                n_splits=2,
-                order=2,
-                sample_distribution_per_fold=[
-                    self.percentage_holdout,
-                    1.0 - self.percentage_holdout,
-                ],
-            )
-            train_indexes, test_indexes = next(
-                stratifier.split(df_name_select, df_name_select[['oxidationstate', 'numbers']]))
-
-            train_names = df_name_select.iloc[train_indexes]
-            test_names = df_name_select.iloc[test_indexes]
-            train_names = list(train_names['base_name'])
-            test_names = list(test_names['base_name'])
-
-            df_train = df[df['base_name'].isin(train_names)]
-            df_test = df[df['base_name'].isin(test_names)]
-
-            x, self.y, self.names = FeatureCollector.get_x_y_names(df_train)
-            self.x = FeatureCollector._select_features(self.selected_features, x, self.outdir_helper, offset)
-
-            x_test, self.y_test, self.names_test = FeatureCollector.get_x_y_names(df_test)
-            self.x_test = FeatureCollector._select_features(self.selected_features, x_test, self.outdir_helper, offset)
+            raise NotImplementedError('Use the full version of minemofox')
 
         else:  # no seperate holdout set
             x, self.y, self.names = FeatureCollector.get_x_y_names(df)
         if self.training_set_size:  # perform farthest point sampling to selet a fixed number of training points
-            collectorlogger.debug('will now perform farthest point sampling on the feature matrix')
-            # Write one additional holdout set
-            assert self.training_set_size < len(df_train)
-
-            x, self.y, self.names = FeatureCollector.get_x_y_names(df_train)
-            x = FeatureCollector._select_features(self.selected_features, x, self.outdir_helper, offset)
-
-            # indices = greedy_farthest_point_samples(x, self.training_set_size)
-            indices = apricot_select(x, self.training_set_size)
-
-            _df_train = df_train
-
-            good_indices = _df_train.index.isin(indices)
-            df_train = _df_train[good_indices]
-            x, self.y, self.names = FeatureCollector.get_x_y_names(df_train)
-
-            df_validation = _df_train[~good_indices]
-            x_valid, self.y_valid, self.names_valid = FeatureCollector.get_x_y_names(df_validation)
-
-            self.x_valid = FeatureCollector._select_features(self.selected_features, x_valid, self.outdir_helper,
-                                                             offset)
+            raise NotImplementedError('Use the full version of minemofox')
 
         self.x = FeatureCollector._select_features(self.selected_features, x, self.outdir_helper, offset)
         collectorlogger.debug('the feature matrix shape is %s', self.x.shape)
