@@ -278,11 +278,7 @@ https://creativecommons.org/publicdomain/zero/1.0/ .
 
 from __future__ import print_function
 from __future__ import absolute_import
-from six.moves import range
-try:
-    import configparser
-except ImportError:
-    import six.moves.configparser as configparser
+import configparser
 import errno
 import json
 import os

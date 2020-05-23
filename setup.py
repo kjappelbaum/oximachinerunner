@@ -11,27 +11,6 @@ import subprocess
 from setuptools import setup
 import versioneer
 
-git_matminer = 'git+git://github.com/kjappelbaum/matminer.git@9d7cd6bc0ad26eaf2246e7e96d40069c550b53a5#egg=matminer'
-
-if '--user' in sys.argv:
-    subprocess.run(
-        [
-            sys.executable,
-            '-m',
-            'pip',
-            'install',
-            '--upgrade',
-            '--user',
-            git_matminer,
-        ],
-        check=False,
-    )
-else:
-    subprocess.run(
-        [sys.executable, '-m', 'pip', 'install', '--upgrade', git_matminer],
-        check=False,
-    )
-
 # Package meta-data.
 NAME = 'oximachinerunner'
 DESCRIPTION = 'Run the oximachine'
@@ -41,9 +20,7 @@ AUTHOR = 'Kevin M. Jablonka, Daniele Ongari, Mohamad Moosavi, Berend Smit'
 REQUIRES_PYTHON = '>=3.5.0'
 
 # What packages are required for this module to be executed?
-REQUIRED = [
-    'six',  'tqdm', 'pandas', 'sympy==1.5.1', 'ase', 'scikit-learn==0.21.3', "pymatgen==2019.9.8"
-]
+REQUIRED = ['six', 'tqdm', 'matminer' 'scikit-learn==0.21.3', 'pandas>=0.22', 'sympy==1.5.1', 'ase', 'pymatgen']
 
 # What packages are optional?
 EXTRAS = {
