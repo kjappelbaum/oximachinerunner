@@ -21,6 +21,7 @@ from pymatgen.io.ase import AseAtomsAdaptor
 from pymatgen.io.cif import CifParser
 from pymatgen.core import Element
 from pymatgen.analysis.local_env import  VoronoiNN
+from matminer.featurizers.base import BaseFeaturizer
 from matminer.featurizers.base import MultipleFeaturizer
 from matminer.utils.data import MagpieData
 from matminer.utils.caching import get_nearest_neighbors
