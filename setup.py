@@ -20,7 +20,8 @@ AUTHOR = 'Kevin M. Jablonka, Daniele Ongari, Mohamad Moosavi, Berend Smit'
 REQUIRES_PYTHON = '>=3.6.0,<3.8.0'
 
 # What packages are required for this module to be executed?
-REQUIRED = ['six', 'tqdm', 'matminer==0.6.3', 'scikit-learn==0.21.3', 'pandas>=0.22', 'sympy==1.5.1', 'ase', 'pymatgen']
+with open('requirements.txt', 'r') as fh:
+    requirements = [line.strip() for line in fh]  # pylint:disable=invalid-name
 
 # What packages are optional?
 EXTRAS = {
@@ -48,7 +49,7 @@ setup(
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
     url=URL,
-    install_requires=REQUIRED,
+    install_requires=requirements,
     extras_require=EXTRAS,
     include_package_data=True,
     license='GPL',
