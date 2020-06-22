@@ -1,9 +1,8 @@
- # requirements.txt
- #
- # installs dependencies from ./setup.py, and the package itself,
- # in editable mode
- -e .
-
- # (the -e above is optional). you could also just install the package
- # normally with just the line below (after uncommenting)
- # .
+six
+tqdm
+matminer==0.6.3
+scikit-learn==0.21.3
+pandas>=0.22,<1
+sympy==1.5.1
+ase
+pymatgen

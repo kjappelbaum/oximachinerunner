@@ -8,9 +8,10 @@ import os
 import pickle
 import warnings
 from glob import glob
+from os import PathLike
 from pathlib import Path
 # from collections import defaultdict
-from typing import Tuple
+from typing import List, Tuple
 
 import numpy as np
 import pandas as pd
@@ -28,7 +29,7 @@ from .utils import diff_to_18e, read_pickle
 
 warnings.simplefilter('ignore')
 
-extra_test_set = []
+extra_test_set: List = []
 
 collectorlogger = logging.getLogger('FeatureCollector')
 collectorlogger.setLevel(logging.INFO)
@@ -527,15 +528,15 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
 
     def __init__(  # pylint:disable=too-many-arguments
         self,
-        inpath: str = None,
-        labelpath: str = None,
-        outdir_labels: str = 'data/labels',
-        outdir_features: str = 'data/features',
-        outdir_helper: str = 'data/helper',
+        inpath: PathLike = None,
+        labelpath: PathLike = None,
+        outdir_labels: PathLike = 'data/labels',
+        outdir_features: PathLike = 'data/features',
+        outdir_helper: PathLike = 'data/helper',
         percentage_holdout: float = 0,
-        outdir_holdout: str = None,
-        forbidden_picklepath: str = 'data/helper/two_ox_states.pkl',
-        exclude_dir: str = '../test_structures/showcases',
+        outdir_holdout: PathLike = None,
+        forbidden_picklepath: PathLike = 'data/helper/two_ox_states.pkl',
+        exclude_dir: PathLike = '../test_structures/showcases',
         selected_features: list = [
             'crystal_nn_fingerprint',
             'ward_prb',
@@ -544,7 +545,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         ],
         old_format: bool = False,
         training_set_size: int = None,
-        racsfile: str = None,
+        racsfile: PathLike = None,
         selectedracs: list = SELECTED_RACS,
         drop_duplicates: bool = True,
     ):
@@ -554,20 +555,20 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         pickle files has the columns as specified in FEATURE_LABELS_ALL
 
         Keyword Arguments:
-            inpath {str} -- path to directory with one pickle file per structure (default: {None})
-            labelpath {str} -- path to picklefile with labels (default: {None})
-            outdir_labels {str} -- path to output directory for labelsfile (default: {"data/labels"})
-            outdir_features {str} -- path to output directory for featuresfile (default: {"data/features"})
-            outdir_helper {str} -- path to output directory for helper files (feature names, structure names) (default: {"data/helper"})
+            inpath {PathLike} -- path to directory with one pickle file per structure (default: {None})
+            labelpath {PathLike} -- path to picklefile with labels (default: {None})
+            outdir_labels {PathLike} -- path to output directory for labelsfile (default: {"data/labels"})
+            outdir_features {PathLike} -- path to output directory for featuresfile (default: {"data/features"})
+            outdir_helper {PathLike} -- path to output directory for helper files (feature names, structure names) (default: {"data/helper"})
             percentage_holdout {float} -- precentage of all the data that should be put away as holdout
-            outdir_holdout {str} -- directory into which the files for the holdout set are written (names, X and y)
-            forbidden_picklepath {str} -- path to picklefile with list of forbidden CSD names (default: {"/home/kevin/Dropbox/proj62_guess_oxidation_states/machine_learn_oxstates/data/helper/two_ox_states.pkl"})
-            exclude_dir {str} -- path to directory with structure names are forbidden as well (default: {"/home/kevin/Dropbox (LSMO)/proj62_guess_oxidation_states/test_structures/showcases"})
+            outdir_holdout {PathLike} -- directory into which the files for the holdout set are written (names, X and y)
+            forbidden_picklepath {PathLike} -- path to picklefile with list of forbidden CSD names (default: {"/home/kevin/Dropbox/proj62_guess_oxidation_states/machine_learn_oxstates/data/helper/two_ox_states.pkl"})
+            exclude_dir {PathLike} -- path to directory with structure names are forbidden as well (default: {"/home/kevin/Dropbox (LSMO)/proj62_guess_oxidation_states/test_structures/showcases"})
             selected_features {list} -- list of selected features. Available crystal_nn_fingerprint, cn, ward_prb, bond_orientational, behler_parinello
               (default: {["crystal_nn_fingerprint","ward_prd","bond_orientational","behler_parinello",]})
             old_format {bool} -- if True, it uses the old feature dictionary style (default: {True})
             training_set_size {int} -- if set to an int, it set an upper limit of the number of training points and uses farthest point sampling to select them
-            racsfile {str} -- path to file with
+            racsfile {PathLike} -- path to file with
             selectedracs {list} -- list of selected RACs
         """
         self.inpath = inpath
@@ -909,11 +910,11 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         return features, labels, names
 
     @staticmethod
-    def create_dict_for_feature_table(picklefile: str) -> list:
+    def create_dict_for_feature_table(picklefile: PathLike) -> list:
         """Reads in a pickle with features and returns a list of dictionaries with one dictionary per metal site.
 
         Arguments:
-            picklefile {str} -- path to pickle file
+            picklefile {PathLike} -- path to pickle file
 
         Returns:
             list -- list of dicionary
@@ -1002,11 +1003,11 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         return result_list
 
     @staticmethod
-    def _create_dict_for_feature_table(picklefile: str) -> list:
+    def _create_dict_for_feature_table(picklefile: PathLike) -> list:
         """Reads in a pickle with features and returns a list of dictionaries with one dictionary per metal site.
 
         Arguments:
-            picklefile {str} -- path to pickle file
+            picklefile {PathLike} -- path to pickle file
 
         Returns:
             list -- list of dicionary
@@ -1037,12 +1038,12 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
 
     @staticmethod
     def write_output(
-        x: np.array,
-        y: np.array,
-        names: list,
-        outdir_labels: str,
-        outdir_features: str,
-        outdir_helper: str,
+            x: np.array,
+            y: np.array,
+            names: list,
+            outdir_labels: PathLike,
+            outdir_features: PathLike,
+            outdir_helper: PathLike,
     ) -> None:
         """writes feature array, label array and name array into output files in outdir/datetime/{x,y}.npy and outdir/datetime/names.pkl
 
@@ -1050,9 +1051,9 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             x {np.array} -- feature matrix
             y {np.array} -- label vector
             names {list} -- name list (csd  identifiers)
-            outdir_labels {str} -- directory into which labels are written
-            outdir_features {str} -- directory into which features are written
-            outdir_helper {str} -- directory into which names are written
+            outdir_labels {PathLike} -- directory into which labels are written
+            outdir_features {PathLike} -- directory into which features are written
+            outdir_helper {PathLike} -- directory into which names are written
 
         Returns:
             None --
