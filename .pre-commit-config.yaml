@@ -45,29 +45,38 @@ repos:
     sha: a234ce4e185cf77a55632888f1811d83b4ad9ef2
     hooks:
       - id: python-modernize
-        exclude: ^docs/|versioneer.py
+        exclude: ^docs/
         args:
           - --write
           - --nobackups
           - --nofix=dict_six
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: "" # Use the sha / tag you want to point at
+    hooks:
+      - id: mypy
+        exclude: versioneer.py|dispersant_screener/_version.py|^docs/
 
   - repo: local
     hooks:
       - id: isort
         name: isort
         language: system
+        exclude: versioneer.py|oximachinerunner/_version.py|^docs/
         types: [python]
         entry: isort
+
       - id: yapf
-        exclude: versioneer.py|oximachinerunner/_version.py
         name: yapf
+        exclude: versioneer.py|oximachinerunner/_version.py|^docs/
         entry: yapf
         language: system
         types: [python]
         args: ["-i"]
+
       - id: prospector
-        exclude: versioneer.py|oximachinerunner/_version.py
         language: system
         types: [file, python]
+        exclude: versioneer.py|oximachinerunner/_version.py|^docs/
         name: prospector
         entry: prospector
