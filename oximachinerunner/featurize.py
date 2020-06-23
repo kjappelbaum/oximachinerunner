@@ -713,7 +713,6 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
 
         self.x = FeatureCollector._select_features(self.selected_features, x, self.outdir_helper, offset)
 
-
     def dump_featurecollection(self) -> None:
         """Collect features and write features, labels and names to seperate files
 

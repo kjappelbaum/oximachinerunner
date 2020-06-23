@@ -285,7 +285,6 @@ import os
 import re
 import subprocess
 import sys
-from six.moves import range
 
 
 class VersioneerConfig:
