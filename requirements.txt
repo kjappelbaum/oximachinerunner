@@ -2,7 +2,7 @@ six
 tqdm
 matminer==0.6.3
 scikit-learn==0.21.3
-pandas>=0.22,<1
+pandas>=0.22,<2
 sympy==1.5.1
 ase
 pymatgen
