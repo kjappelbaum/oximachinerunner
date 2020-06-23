@@ -7,7 +7,7 @@ from __future__ import absolute_import
 import io
 import os
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 import versioneer
 
@@ -51,6 +51,7 @@ setup(
     url=URL,
     install_requires=requirements,
     extras_require=EXTRAS,
+    packages=find_packages(),
     include_package_data=True,
     license='GPL',
     classifiers=[
