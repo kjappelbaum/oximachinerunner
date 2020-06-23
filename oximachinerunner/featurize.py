@@ -495,7 +495,7 @@ class GetFeatures:
         """
         self.get_metal_sites()
         try:
-            self.logger.info('iterating over {} metal sites'.format(len(self.metal_sites)))
+            self.logger.debug('iterating over {} metal sites'.format(len(self.metal_sites)))
             for idx, metal_site in enumerate(self.metal_sites):
                 self.features.append({
                     'metal': metal_site.species_string,
@@ -511,7 +511,7 @@ class GetFeatures:
         """loops over sites if check ok"""
         self.get_metal_sites()
         try:
-            self.logger.info('iterating over {} metal sites'.format(len(self.metal_sites)))
+            self.logger.debug('iterating over {} metal sites'.format(len(self.metal_sites)))
             for idx, metal_site in enumerate(self.metal_sites):
                 self.features.append({
                     'metal': metal_site.species_string,
