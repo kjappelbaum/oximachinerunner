@@ -25,7 +25,8 @@ with open('requirements.txt', 'r') as fh:
 
 # What packages are optional?
 EXTRAS = {
-    'dev': ['prospector', 'pre-commit', 'pylint', 'pytest', 'versioneer', 'isort'],
+    'dev': ['prospector', 'pre-commit', 'pylint', 'pytest', 'versioneer', 'isort', 'yapf'],
+    'changelog': ['gitchangelog']
 }
 
 here = os.path.abspath(os.path.dirname(__file__))

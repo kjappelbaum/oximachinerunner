@@ -9,12 +9,12 @@ from typing import Union
 
 import joblib
 import numpy as np
+from oximachine_featurizer.featurize import FeatureCollector, GetFeatures
 from pymatgen import Structure
 
 import oximachinerunner.learnmofox as learnmofox
 
 from ._version import get_versions
-from .featurize import FeatureCollector, GetFeatures
 from .utils import read_pickle
 
 __version__ = get_versions()['version']

@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/Users/kevinmaikjablonka/opt/miniconda3/envs/oximachinerunner/bin/python",
     "python.linting.pylintEnabled": true,
-    "python.formatting.provider": "yapf"
+    "python.formatting.provider": "yapf",
+    "restructuredtext.confPath": ""
 }
