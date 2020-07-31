@@ -7,7 +7,9 @@ Changelog
 
 Changes
 ~~~~~~~
-- Chore: updated changelog. [Kevin]
+- Chore: added simple example to CI. [Kevin]
+- Chore: moving example notebook. [Kevin]
+- Chore: updated readme. [Kevin]
 
 
 v0.2.1 (2020-07-31)
@@ -15,6 +17,8 @@ v0.2.1 (2020-07-31)
 
 Changes
 ~~~~~~~
+- Chore: updated changelog. [Kevin]
+- Chore: updated changelog. [Kevin]
 - Chore: updated dependencies. [Kevin]
 
 

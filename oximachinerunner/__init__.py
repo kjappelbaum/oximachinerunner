@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 import os
 import sys
+import warnings
 from typing import Union
 
 import joblib
@@ -22,8 +23,11 @@ del get_versions
 sys.modules['learnmofox'] = learnmofox
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
-MODEL = joblib.load(os.path.join(THIS_DIR, 'assets', 'votingclassifier.joblib'))
-SCALER = joblib.load(os.path.join(THIS_DIR, 'assets', 'scaler_0.joblib'))
+
+with warnings.catch_warnings():
+    warnings.simplefilter('ignore')
+    MODEL = joblib.load(os.path.join(THIS_DIR, 'assets', 'votingclassifier.joblib'))
+    SCALER = joblib.load(os.path.join(THIS_DIR, 'assets', 'scaler_0.joblib'))
 
 # those global vars are for now hard coded for this model
 METAL_CENTER_FEATURES = [
@@ -93,8 +97,11 @@ def run_oximachine(cif: str) -> Union[list, list, list]:
         Union[list, list, list]: list of oxidation states, list of metal indices,
         list of metal symbols
     """
-    structure = Structure.from_file(cif)
-    X, metal_indices, metal_symbols = _featurize_single(structure)  # pylint:disable=protected-access
-    prediction = _make_predictions(X)  # pylint:disable=protected-access
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        structure = Structure.from_file(cif)
+        X, metal_indices, metal_symbols = _featurize_single(structure)  # pylint:disable=protected-access
+
+        prediction = _make_predictions(X)  # pylint:disable=protected-access
 
     return prediction, metal_indices, metal_symbols

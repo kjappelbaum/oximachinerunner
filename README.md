@@ -1,6 +1,7 @@
 # oximachinerunner
 
 [![Actions Status](https://github.com/kjappelbaum/oximachinerunner/workflows/Python%20package/badge.svg)](https://github.com/kjappelbaum/oximachinerunner/actions)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kjappelbaum/oximachinerunner/master?filepath=examples%2Fexample.ipynb)
 
 _oximachine for AiiDA lab_: Core functionalities of oximachine with stripped dependencies.
 
