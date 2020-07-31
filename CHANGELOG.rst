@@ -103,5 +103,3 @@ Other
 ~~~~~
 - Create python-package.yml. [Kevin Jablonka]
 - Break: learnmofox as subpackage, import works now. [Kevin]
-
-
