@@ -8,6 +8,7 @@ Changelog
 Changes
 ~~~~~~~
 - Chore: removing large files for pypi release. [Kevin]
+- Chore: removing large files for pypi release. [Kevin]
 
 
 v0.2.3 (2020-08-26)
