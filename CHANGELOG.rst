@@ -7,6 +7,7 @@ Changelog
 
 Changes
 ~~~~~~~
+- Chore: adding requirements to MANIFEST for pypi. [Kevin]
 - Chore: removing large files for pypi release. [Kevin]
 
 
