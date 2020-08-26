@@ -2,20 +2,14 @@ Changelog
 =========
 
 
-(unreleased)
-------------
-
-Changes
-~~~~~~~
-- Chore: adding requirements to MANIFEST for pypi. [Kevin]
-- Chore: removing large files for pypi release. [Kevin]
-
-
 v0.2.4 (2020-08-26)
 -------------------
 
 Changes
 ~~~~~~~
+- Chore: adding requirements to MANIFEST for pypi. [Kevin]
+- Chore: adding requirements to MANIFEST for pypi. [Kevin]
+- Chore: removing large files for pypi release. [Kevin]
 - Chore: removing large files for pypi release. [Kevin]
 - Chore: removing large files for pypi release. [Kevin]
 - Chore: removing large files for pypi release. [Kevin]
