@@ -2,3 +2,4 @@ include README.md LICENSE
 include versioneer.py
 include oximachinerunner/_version.py
 include oximachinerunner/assets/*.joblib
+include requirements.txt
