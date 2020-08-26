@@ -1,5 +1,6 @@
 include README.md LICENSE
 include versioneer.py
 include oximachinerunner/_version.py
-include oximachinerunner/assets/*.joblib
+include oximachinerunner/assets/scaler_0.joblib
+include oximachinerunner/assets/votingclassifier.joblib
 include requirements.txt
