@@ -10,10 +10,10 @@ from typing import Union
 
 import joblib
 import numpy as np
-from oximachine_featurizer.featurize import FeatureCollector, GetFeatures
 from pymatgen import Structure
 
 import oximachinerunner.learnmofox as learnmofox
+from oximachine_featurizer.featurize import FeatureCollector, GetFeatures
 
 from ._version import get_versions
 from .utils import read_pickle
