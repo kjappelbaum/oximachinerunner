@@ -2,6 +2,14 @@ Changelog
 =========
 
 
+v0.2.6 (2020-08-26)
+-------------------
+
+Changes
+~~~~~~~
+- Chore: bumping featurizer dependency. [Kevin]
+
+
 v0.2.5 (2020-08-26)
 -------------------
 

@@ -1,4 +1,4 @@
-oximachine_featurizer>=0.2.2
+oximachine_featurizer>=0.2.3
 ipywidgets
 traitlets
 xgboost==1.1.1
