@@ -29,9 +29,9 @@ with warnings.catch_warnings():
     MODEL_MOF = joblib.load(os.path.join(THIS_DIR, 'assets', 'votingclassifier.joblib'))
     SCALER_MOF = joblib.load(os.path.join(THIS_DIR, 'assets', 'scaler_0.joblib'))
 
-    # MODEL_ALL = joblib.load(os.path.join(THIS_DIR, 'assets', '20200823-161001_ensemble_0.joblib'))
-    # SCALER_ALL = joblib.load(os.path.join(THIS_DIR, 'assets', '20200822-151455_scaler.joblib'))
-    # VT_ALL = joblib.load(os.path.join(THIS_DIR, 'assets', '20200822-151455_vt.joblib'))
+    MODEL_ALL = joblib.load(os.path.join(THIS_DIR, 'assets', '20200823-161001_ensemble_0.joblib'))
+    SCALER_ALL = joblib.load(os.path.join(THIS_DIR, 'assets', '20200822-151455_scaler.joblib'))
+    VT_ALL = joblib.load(os.path.join(THIS_DIR, 'assets', '20200822-151455_vt.joblib'))
 
 # those global vars are for now hard coded for this model
 
@@ -137,8 +137,6 @@ def run_oximachine(cif: str, model='mof') -> Union[list, list, list]:
         Union[list, list, list]: list of oxidation states, list of metal indices,
         list of metal symbols
     """
-    if model == 'all': 
-        raise NotImplementedError('The model trained on all structures of the CSD is not available in this release')
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
         structure = Structure.from_file(cif)
