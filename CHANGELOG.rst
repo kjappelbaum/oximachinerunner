@@ -5,9 +5,19 @@ Changelog
 (unreleased)
 ------------
 
+New
+~~~
+- Feat: adding option for model trained on all CSD,  updating examples
+  and pinning dependencies. [Kevin]
+- Feat: adding option for model trained on all CSD,  updating examples
+  and pinning dependencies. [Kevin]
+- Feat: adding option for model trained on all CSD,  updating examples
+  and pinning dependencies. [Kevin]
+
 Changes
 ~~~~~~~
-- Chore: added simple example to CI. [Kevin]
+- Chore: updating example. [Kevin]
+- Chore: updated changelog. [Kevin]
 - Chore: moving example notebook. [Kevin]
 - Chore: updated readme. [Kevin]
 
