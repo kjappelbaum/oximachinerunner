@@ -2,8 +2,8 @@ Changelog
 =========
 
 
-(unreleased)
-------------
+v0.2.2 (2020-08-26)
+-------------------
 
 New
 ~~~
@@ -16,6 +16,7 @@ New
 
 Changes
 ~~~~~~~
+- Chore: preparing next release. [Kevin]
 - Chore: updating example. [Kevin]
 - Chore: updated changelog. [Kevin]
 - Chore: moving example notebook. [Kevin]
