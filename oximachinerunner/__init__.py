@@ -38,9 +38,8 @@ def _load_file(path, md5, url, automatic_download):  # pylint:disable=inconsiste
                 Probably you did not download it yet. You can either enable automatic downloads\
                 (automatic_download=True) or use the download functions from the utils module\
                 to download the files")
-        else:  # pylint:disable=no-else-return
-            download_model(url, path, md5)
-            _load_file(path, md5, url, automatic_download)
+        download_model(url, path, md5)
+        return _load_file(path, md5, url, automatic_download)
 
 
 def load_model(modelname, automatic_download):
@@ -124,15 +123,20 @@ class OximachineRunner:
 
     def run_oximachine(self, structure):
         if isinstance(structure, Structure):
-            self._run_oximachine(structure)
+            return self._run_oximachine(structure)
         elif isinstance(structure, Atoms):
             s = AseAtomsAdaptor.get_structure(structure)
-            self._run_oximachine(s)
+            return self._run_oximachine(s)
         elif isinstance(structure, str):
-            # ToDo: Potentially replace the parser with c2x\ 
+            # ToDo: Potentially replace the parser with c2x\
             # --- but it is unclear how to achieve Mac/Windows/Linux compatibility here
             s = Structure.from_file(structure)
-            self._run_oximachine(s)
+            return self._run_oximachine(s)
+        elif isinstance(structure, os.PathLike):
+            # ToDo: Potentially replace the parser with c2x\
+            # --- but it is unclear how to achieve Mac/Windows/Linux compatibility here
+            s = Structure.from_file(structure)
+            return self._run_oximachine(s)
         else:
             raise ValueError('Could not recognize structure! I can read Pymatgen structure objects,\
                  ASE atom objects and a filepath in a fileformat that can be read by ase')

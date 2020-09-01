@@ -30,7 +30,7 @@ def md5sum(filename):
 def model_exists(path, md5):
     is_exist = False
     if os.path.exists(path):
-        this_file_md5 = md5(path)
+        this_file_md5 = md5sum(path)
         if this_file_md5 == md5:
             is_exist = True
 
@@ -52,14 +52,17 @@ def download_model(url, destination, md5):
         print('{} are not exist or md5 is wrong.'.format(destination))
         print('Download file from {}'.format(url))
         try:
+            basedir = Path(destination).parent
+            if not os.path.exists(basedir):
+                os.makedirs(basedir)
             urllib.request.urlretrieve(url, destination, cbk_for_urlretrieve)
             this_file_md5 = md5sum(destination)
             if this_file_md5 == md5:
                 print('\nDownload {} file successfully.'.format(destination))
             else:
                 raise Exception('Md5 wrong.')
-        except Exception:
-            infos = '\n[Error]: Download from {} failed!'.format(url)
+        except Exception as error:
+            infos = '[Error]: Download from {} failed due to {}'.format(url, error)
             raise Exception(infos)
 
 
