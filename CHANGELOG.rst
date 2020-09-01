@@ -2,6 +2,15 @@ Changelog
 =========
 
 
+v1.0.1 (2020-09-01)
+-------------------
+
+Changes
+~~~~~~~
+- Chore: updated example for new API. [Kevin]
+- Chore: updating manifest. [Kevin]
+
+
 v1.0.0 (2020-09-01)
 -------------------
 
@@ -12,6 +21,7 @@ New
 
 Changes
 ~~~~~~~
+- Chore: preparing release. [Kevin]
 - Chore: dirty commit for checkout. [Kevin]
 - Chore: preparing merge with master and new release. [Kevin]
 - Chore: updating docstrings. [Kevin]
