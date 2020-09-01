@@ -23,6 +23,8 @@ pip install oximachinerunner
 
 ## Usage
 
+Note that since XX the models are no longer shipped with the PyPi package. There is a dedicated function to download the models, which has to be run before the first use.
+
 ```(python)
 from oximachinerunner import run_oximachine
 run_oximachine('oximachinerunner/assets/ACODAA.cif')

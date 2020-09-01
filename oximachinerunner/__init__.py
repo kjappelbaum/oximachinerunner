@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # pylint:disable=invalid-name
 """Implements methods to use oximachine as part of a Python package"""
-from __future__ import absolute_import
-
 import os
 import sys
 import warnings
@@ -10,13 +8,16 @@ from typing import Union
 
 import joblib
 import numpy as np
+from ase import Atoms
+from oximachine_featurizer.featurize import FeatureCollector, GetFeatures
 from pymatgen import Structure
+from pymatgen.io.ase import AseAtomsAdaptor
 
 import oximachinerunner.learnmofox as learnmofox
-from oximachine_featurizer.featurize import FeatureCollector, GetFeatures
 
 from ._version import get_versions
-from .utils import read_pickle
+from .config import MODEL_CONFIG, MODEL_DEFAULT_MAPPING
+from .utils import download_model, model_exists, read_pickle
 
 __version__ = get_versions()['version']
 del get_versions
@@ -24,124 +25,132 @@ sys.modules['learnmofox'] = learnmofox
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 
-with warnings.catch_warnings():
-    warnings.simplefilter('ignore')
-    MODEL_MOF = joblib.load(os.path.join(THIS_DIR, 'assets', 'votingclassifier.joblib'))
-    SCALER_MOF = joblib.load(os.path.join(THIS_DIR, 'assets', 'scaler_0.joblib'))
 
-    MODEL_ALL = joblib.load(os.path.join(THIS_DIR, 'assets', '20200823-161001_ensemble_0.joblib'))
-    SCALER_ALL = joblib.load(os.path.join(THIS_DIR, 'assets', '20200822-151455_scaler.joblib'))
-    VT_ALL = joblib.load(os.path.join(THIS_DIR, 'assets', '20200822-151455_vt.joblib'))
-
-# those global vars are for now hard coded for this model
-
-FEATURES_MOF = ['local_property_stats'] + [
-    'column',
-    'row',
-    'valenceelectrons',
-    'diffto18electrons',
-    'sunfilled',
-    'punfilled',
-    'dunfilled',
-] + ['crystal_nn_no_steinhardt']
-
-METAL_CENTER_FEATURES = [
-    'column',
-    'row',
-    'valenceelectrons',
-    'diffto18electrons',
-    'sunfilled',
-    'punfilled',
-    'dunfilled',
-]
-GEOMETRY_FEATURES = ['crystal_nn_fingerprint', 'behler_parinello']
-CHEMISTRY_FEATURES = ['local_property_stats']
-
-FEATURES_ALL = CHEMISTRY_FEATURES + METAL_CENTER_FEATURES + ['crystal_nn_fingerprint', 'behler_parinello']
+def _load_file(path, md5, url, automatic_download):  # pylint:disable=inconsistent-return-statements
+    if model_exists(path, md5):
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            model = joblib.load(path)
+        return model
+    else:  # pylint:disable=no-else-return
+        if not automatic_download:
+            raise FileNotFoundError("The model does not exist and you didn't allow automatic download.\
+                Probably you did not download it yet. You can either enable automatic downloads\
+                (automatic_download=True) or use the download functions from the utils module\
+                to download the files")
+        else:  # pylint:disable=no-else-return
+            download_model(url, path, md5)
+            _load_file(path, md5, url, automatic_download)
 
 
-def _make_predictions(X: np.array, model: str = 'mof') -> list:
-    """Makes predictions for a set of metal sites.
-    Applies the scaler to the feature matrix.
+def load_model(modelname, automatic_download):
+    # Check if one default model was selected
+    if modelname == 'all':
+        modelname = MODEL_DEFAULT_MAPPING['all']
+    if modelname == 'mof':
+        modelname = MODEL_DEFAULT_MAPPING['mof']
 
-    Args:
-        X (np.array): feature matrix
-        model (str): can be used to toggle between the model trained only on MOFs ("mof")
-            and the model trained on all the CSD + COD ("all"). Defaults to "mof"
+    if modelname not in MODEL_CONFIG.keys():
+        raise ValueError('A model with name {} does not exist in the configuration.'.format(modelname))
 
-    Returns:
-        list: predictions (this is the vote of the four base estimators)
-    """
-    if model == 'all':
-        X = VT_ALL.transform(X)
-        X_scaled = SCALER_ALL.transform(X)
-        prediction = MODEL_ALL.predict(X_scaled)
-    elif model == 'mof':
-        X_scaled = SCALER_MOF.transform(X)
-        prediction = MODEL_MOF.predict(X_scaled)
-    else:
-        X_scaled = SCALER_MOF.transform(X)
-        prediction = MODEL_MOF.predict(X_scaled)
-    return list(prediction)
+    modelpath = MODEL_CONFIG[modelname]['classifier']['path']
+    modelmd5 = MODEL_CONFIG[modelname]['classifier']['md5']
+    modelurl = MODEL_CONFIG[modelname]['classifier']['url']
+
+    scalerpath = MODEL_CONFIG[modelname]['scaler']['path']
+    scalermd5 = MODEL_CONFIG[modelname]['scaler']['md5']
+    scalerurl = MODEL_CONFIG[modelname]['scaler']['url']
+
+    model = _load_file(modelpath, modelmd5, modelurl, automatic_download)
+    scaler = _load_file(scalerpath, scalermd5, scalerurl, automatic_download)
+    featureset = MODEL_CONFIG[modelname]['features']
+
+    return model, scaler, featureset
 
 
-def _featurize_single(structure: Structure, model: str = 'mof', feature_dir: str = '') -> Union[np.array, list, list]:
-    """Finds metals in the structure, featurizes the metal sites and collects the features
+class OximachineRunner:
 
-    Args:
-        structure (pymatgen.Structure): Structure to featurize
-        model (str): can be used to toggle between the model trained only on MOFs ("mof")
-            and the model trained on all the CSD + COD ("all"). Defaults to "mof"
-        feature_dir (str, optional): Directory to which features should be saved,
-        can be useful if features should be reused. Defaults to "".
+    def __init__(self, modelname: str = 'all', automatic_download: bool = True):
+        model, scaler, featureset = load_model(modelname, automatic_download)
+        self.modelname = modelname
+        self.model = model
+        self.scaler = scaler
+        self.featureset = featureset
 
-    Returns:
-        Union[np.array, list, list]: [description]
-    """
-    get_feat = GetFeatures(structure, feature_dir)
-    features = get_feat.return_features()
-    metal_indices = get_feat.metal_indices
-    X = []
-    feat_dict_list = FeatureCollector.create_dict_for_feature_table_from_dict(features)
-    for feat_dict in feat_dict_list:
-        X.append(feat_dict['feature'])
+    def __repr__(self):
+        return 'OximachineRunner (version: {}) with model {}'.format(__version__, self.modelname)
 
-    if model == 'mof':
+    def _make_predictions(self, X: np.array) -> list:
+        """Makes predictions for a set of metal sites.
+        Applies the scaler to the feature matrix.
+
+        Args:
+            X (np.array): feature matrix
+
+        Returns:
+            list: predictions (this is the vote of the four base estimators)
+        """
+        X_scaled = self.scaler.transform(X)
+        prediction = self.model.predict(X_scaled)
+
+        return list(prediction)
+
+    def _featurize_single(self, structure: Structure) -> Union[np.array, list, list]:
+        """Finds metals in the structure, featurizes the metal sites and collects the features
+
+        Args:
+            structure (pymatgen.Structure): Structure to featurize
+
+        Returns:
+            Union[np.array, list, list]: [description]
+        """
+        get_feat = GetFeatures(structure, '')
+        features = get_feat.return_features()
+        metal_indices = get_feat.metal_indices
+        X = []
+        feat_dict_list = FeatureCollector.create_dict_for_feature_table_from_dict(features)
+        for feat_dict in feat_dict_list:
+            X.append(feat_dict['feature'])
+
         X = np.vstack(X)
         (
             X,
             _,
         ) = FeatureCollector._select_features_return_names(  # pylint:disable=protected-access
-            FEATURES_MOF, X)
-    elif model == 'all':
-        X = np.vstack(X)
-        (
-            X,
-            _,
-        ) = FeatureCollector._select_features_return_names(  # pylint:disable=protected-access
-            FEATURES_ALL, X)
+            self.featureset, X)
 
-    metals = [site.species_string for site in get_feat.metal_sites]
-    return X, metal_indices, metals
+        metals = [site.species_string for site in get_feat.metal_sites]
+        return X, metal_indices, metals
 
+    def run_oximachine(self, structure):
+        if isinstance(structure, Structure):
+            self._run_oximachine(structure)
+        elif isinstance(structure, Atoms):
+            s = AseAtomsAdaptor.get_structure(structure)
+            self._run_oximachine(s)
+        elif isinstance(structure, str):
+            # ToDo: Potentially replace the parser with c2x\ 
+            # --- but it is unclear how to achieve Mac/Windows/Linux compatibility here
+            s = Structure.from_file(structure)
+            self._run_oximachine(s)
+        else:
+            raise ValueError('Could not recognize structure! I can read Pymatgen structure objects,\
+                 ASE atom objects and a filepath in a fileformat that can be read by ase')
 
-def run_oximachine(cif: str, model='mof') -> Union[list, list, list]:
-    """Run the oximachine on one structure
+    def _run_oximachine(self, structure: Structure) -> Union[list, list, list]:
+        """Run the oximachine on one structure
 
-    Args:
-        cif (str): Filepath to cif
-        model (str): can be used to toggle between the model trained only on MOFs ("mof")
-            and the model trained on all the CSD + COD ("all"). Defaults to "mof"
+        Args:
+            structure (Structure): pymatgen Structure object
 
-    Returns:
-        Union[list, list, list]: list of oxidation states, list of metal indices,
-        list of metal symbols
-    """
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore')
-        structure = Structure.from_file(cif)
-        X, metal_indices, metal_symbols = _featurize_single(structure, model=model)  # pylint:disable=protected-access
+        Returns:
+            Union[list, list, list]: list of oxidation states, list of metal indices,
+            list of metal symbols
+        """
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            X, metal_indices, metal_symbols = self._featurize_single(structure)  # pylint:disable=protected-access
 
-        prediction = _make_predictions(X, model=model)  # pylint:disable=protected-access
+            prediction = self._make_predictions(X)  # pylint:disable=protected-access
 
-    return prediction, metal_indices, metal_symbols
+        return prediction, metal_indices, metal_symbols

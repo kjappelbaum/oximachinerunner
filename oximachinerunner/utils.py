@@ -3,16 +3,70 @@
 """
 Some general utility functions for the oxidation state mining project
 """
-from __future__ import absolute_import, print_function
 
+import hashlib
 import json
 import os
 import pickle
+import urllib
 from collections.abc import Iterable
+from functools import partial
 from pathlib import Path
 
 import numpy as np
 from pymatgen.core import Element
+
+from .config import MODEL_CONFIG
+
+
+def md5sum(filename):
+    with open(filename, 'rb') as f:
+        d = hashlib.md5()
+        for buf in iter(partial(f.read, 128), b''):
+            d.update(buf)
+    return d.hexdigest()
+
+
+def model_exists(path, md5):
+    is_exist = False
+    if os.path.exists(path):
+        this_file_md5 = md5(path)
+        if this_file_md5 == md5:
+            is_exist = True
+
+    return is_exist
+
+
+def cbk_for_urlretrieve(a, b, c):
+    '''
+    Callback function for showing process
+    '''
+    per = 100.0 * a * b / c
+    if per > 100:
+        per = 100
+    print('\r%.1f%% of %.2fM' % (per, c / (1024 * 1024)), end='')
+
+
+def download_model(url, destination, md5):
+    if not model_exists(destination, md5):
+        print('{} are not exist or md5 is wrong.'.format(destination))
+        print('Download file from {}'.format(url))
+        try:
+            urllib.request.urlretrieve(url, destination, cbk_for_urlretrieve)
+            this_file_md5 = md5sum(destination)
+            if this_file_md5 == md5:
+                print('\nDownload {} file successfully.'.format(destination))
+            else:
+                raise Exception('Md5 wrong.')
+        except Exception:
+            infos = '\n[Error]: Download from {} failed!'.format(url)
+            raise Exception(infos)
+
+
+def download_all():
+    for _, v in MODEL_CONFIG.items():
+        download_model(v['scaler']['url'], v['scaler']['path'], v['scaler']['md5'])
+        download_model(v['classifier']['url'], v['classifier']['path'], v['classifier']['md5'])
 
 
 def read_pickle(filepath: str):
