@@ -26,13 +26,29 @@ sys.modules['learnmofox'] = learnmofox
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
-def _load_file(path, md5, url, automatic_download):  # pylint:disable=inconsistent-return-statements
-    if model_exists(path, md5):
+def _load_file(path, md5: str, url: str, automatic_download: bool = True):  # pylint:disable=inconsistent-return-statements
+    """[summary]
+
+    Args:
+        path (str, PathLike): Path of the model file
+        md5 (str): md5 hash of the model file
+        url (str): url to download the file from
+        automatic_download (bool): If true, it automatically downloads
+            the file if it is not available
+
+    Raises:
+        FileNotFoundError: If automatic_download is not enabled and the file
+            is not on the disk
+
+    Returns:
+        model, typically a sklearn estimator object
+    """
+    if model_exists(path, md5):  # pylint:disable=no-else-return
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
             model = joblib.load(path)
         return model
-    else:  # pylint:disable=no-else-return
+    else:
         if not automatic_download:
             raise FileNotFoundError("The model does not exist and you didn't allow automatic download.\
                 Probably you did not download it yet. You can either enable automatic downloads\
@@ -42,7 +58,20 @@ def _load_file(path, md5, url, automatic_download):  # pylint:disable=inconsiste
         return _load_file(path, md5, url, automatic_download)
 
 
-def load_model(modelname, automatic_download):
+def load_model(modelname: str, automatic_download: bool = True):
+    """Orchestrates the loading of the model and the scaler
+
+    Args:
+        modelname (str): name of the model
+        automatic_download (bool): if true,
+            it will attempt to automatically download the model
+
+    Raises:
+        ValueError: if the modelname is not defined in the configuration
+
+    Returns:
+        model, scaler, featurenames
+    """
     # Check if one default model was selected
     if modelname == 'all':
         modelname = MODEL_DEFAULT_MAPPING['all']
@@ -68,13 +97,30 @@ def load_model(modelname, automatic_download):
 
 
 class OximachineRunner:
+    """Loads a model and then runs the prediction"""
 
     def __init__(self, modelname: str = 'all', automatic_download: bool = True):
+        """
+
+        Args:
+            modelname (str, optional): [description]. Defaults to 'all'.
+                Use it to specifiy a model. You can view all available models with
+                the .available_models property
+            automatic_download (bool, optional): [description]. Defaults to True.
+        """
         model, scaler, featureset = load_model(modelname, automatic_download)
         self.modelname = modelname
         self.model = model
         self.scaler = scaler
         self.featureset = featureset
+
+    @property
+    def available_models(self):
+        return sorted(list(MODEL_CONFIG.keys()) + list(MODEL_DEFAULT_MAPPING.keys()))
+
+    @property
+    def default_mapping(self):
+        return MODEL_DEFAULT_MAPPING
 
     def __repr__(self):
         return 'OximachineRunner (version: {}) with model {}'.format(__version__, self.modelname)
@@ -121,8 +167,21 @@ class OximachineRunner:
         metals = [site.species_string for site in get_feat.metal_sites]
         return X, metal_indices, metals
 
-    def run_oximachine(self, structure):
-        if isinstance(structure, Structure):
+    def run_oximachine(self, structure) -> Union[list, list, list]:
+        """Runs oximachine after attempting to guess what structure is
+
+        Args:
+            structure ([type]): can be a `pymatgen.Structure`, `ase.Atoms` or a filepath as `str` or
+        `os.PathLike`, which we then attempt to parse with pymatgen.
+
+        Raises:
+            ValueError: In case the format of structure is not implemented
+
+        Returns:
+            Union[list, list, list]: list of oxidation states, list of metal indices,
+            list of metal symbols
+        """
+        if isinstance(structure, Structure):  # pylint:disable=no-else-return
             return self._run_oximachine(structure)
         elif isinstance(structure, Atoms):
             s = AseAtomsAdaptor.get_structure(structure)

@@ -5,21 +5,140 @@ Changelog
 (unreleased)
 ------------
 
+New
+~~~
+- Feat: complete refactoring into OO API. [Kevin]
+- Feat: complete refactoring into OO API. [Kevin]
+
 Changes
 ~~~~~~~
-- Chore: added simple example to CI. [Kevin]
+- Chore: tests migrated to new API. [Kevin]
+- Chore: deleting files. [Kevin]
+- Chore: preparing for all CSD model. [Kevin]
+- Chore: preparing for all CSD model. [Kevin]
+
+
+v0.2.6 (2020-08-26)
+-------------------
+
+Changes
+~~~~~~~
+- Chore: bumping featurizer dependency. [Kevin]
+
+
+v0.2.5 (2020-08-26)
+-------------------
+
+Changes
+~~~~~~~
+- Chore: being more specific in MANIFEST. [Kevin]
+
+
+v0.2.4 (2020-08-26)
+-------------------
+
+Changes
+~~~~~~~
+- Chore: preparing release. [Kevin]
+- Chore: adding requirements to MANIFEST for pypi. [Kevin]
+- Chore: adding requirements to MANIFEST for pypi. [Kevin]
+- Chore: removing large files for pypi release. [Kevin]
+- Chore: removing large files for pypi release. [Kevin]
+- Chore: removing large files for pypi release. [Kevin]
+- Chore: removing large files for pypi release. [Kevin]
+
+
+v0.2.3 (2020-08-26)
+-------------------
+
+Changes
+~~~~~~~
+- Chore: removing large files for pypi release. [Kevin]
+- Chore: removing large files for pypi release. [Kevin]
+- Chore: removing large files for pypi release. [Kevin]
+
+
+v0.2.2 (2020-08-26)
+-------------------
+
+New
+~~~
+- Feat: adding option for model trained on all CSD,  updating examples
+  and pinning dependencies. [Kevin]
+- Feat: adding option for model trained on all CSD,  updating examples
+  and pinning dependencies. [Kevin]
+- Feat: adding option for model trained on all CSD,  updating examples
+  and pinning dependencies. [Kevin]
+
+Changes
+~~~~~~~
+- Chore: preparing next release. [Kevin]
+- Chore: preparing next release. [Kevin]
+- Chore: updating example. [Kevin]
+- Chore: updated changelog. [Kevin]
 - Chore: moving example notebook. [Kevin]
 - Chore: updated readme. [Kevin]
+- Chore: updated changelog. [Kevin]
+- Chore: updated changelog. [Kevin]
+- Chore: updated dependencies. [Kevin]
 
 
 v0.2.1 (2020-07-31)
 -------------------
+
+New
+~~~
+- Feat: added widget. [Kevin]
+- Feat: implementing featurizer class directly in this package. [Kevin]
 
 Changes
 ~~~~~~~
 - Chore: updated changelog. [Kevin]
 - Chore: updated changelog. [Kevin]
 - Chore: updated dependencies. [Kevin]
+- Chore: trying to fix installation issue. [Kevin]
+- Chore: trying to fix installation issue. [Kevin]
+- Chore: updating pre-commit hooks. [Kevin]
+- Chore(deps): bump sympy from 1.5.1 to 1.6. [dependabot-preview[bot]]
+
+  Bumps [sympy](https://github.com/sympy/sympy) from 1.5.1 to 1.6.
+  - [Release notes](https://github.com/sympy/sympy/releases)
+  - [Commits](https://github.com/sympy/sympy/compare/sympy-1.5.1...sympy-1.6)
+- Chore(deps): update pandas requirement from <1,>=0.22 to >=0.22,<2.
+  [dependabot-preview[bot]]
+
+  Updates the requirements on [pandas](https://github.com/pandas-dev/pandas) to permit the latest version.
+  - [Release notes](https://github.com/pandas-dev/pandas/releases)
+  - [Changelog](https://github.com/pandas-dev/pandas/blob/master/RELEASE.md)
+  - [Commits](https://github.com/pandas-dev/pandas/compare/v0.22.0...v1.0.5)
+- Chore: linting. [Kevin]
+- Chore: updating manifest for publication. [Kevin]
+- Chore: linting. [Kevin]
+- Chore: linting. [Kevin]
+- Chore: updatin python version. [Kevin]
+- Chore: updating pre-commit hooks. [Kevin]
+- Chore: updating badge. [Kevin]
+- Chore: reran notebook, remove py3.5 from CI. [Kevin]
+- Chore: trying to drop two more dependencies. [Kevin]
+- Chore: trigger CI. [Kevin]
+
+Fix
+~~~
+- Imports now cleaner, there is still an ERROR message in installation,
+  but this is just due to pinned version in matminer. [Kevin]
+- Missing six dependency. [Kevin]
+
+Other
+~~~~~
+- Merge pull request #2 from kjappelbaum/dependabot/pip/sympy-1.6.
+  [Kevin Jablonka]
+
+  chore(deps): bump sympy from 1.5.1 to 1.6
+- Merge pull request #1 from kjappelbaum/dependabot/pip/pandas-
+  gte-0.22-and-lt-2. [Kevin Jablonka]
+
+  chore(deps): update pandas requirement from <1,>=0.22 to >=0.22,<2
+- Create python-package.yml. [Kevin Jablonka]
 
 
 v0.2-alpha (2020-06-23)

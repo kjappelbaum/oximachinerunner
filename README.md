@@ -23,11 +23,12 @@ pip install oximachinerunner
 
 ## Usage
 
-Note that since XX the models are no longer shipped with the PyPi package. There is a dedicated function to download the models, which has to be run before the first use.
+Note that since version 1 the models are no longer shipped with the PyPi package. There is a dedicated function to download the models, which has to be run before the first use. Also, in contrast to version 0, the interface is now object-oriented
 
 ```(python)
-from oximachinerunner import run_oximachine
-run_oximachine('oximachinerunner/assets/ACODAA.cif')
+from oximachinerunner import OximachineRunner
+runner = OximachineRunner()
+runner.run_oximachine('oximachinerunner/assets/ACODAA.cif')
 ```
 
 Will return a tuple with three elements:
@@ -36,10 +37,7 @@ Will return a tuple with three elements:
 - A list of indices of the metal sites
 - Strings indicating the metal
 
-## assets
 
-Currently, served directly in the package. In the future might be fetched from an external storage.
+The `OximachineRunner` can be initialized with a modelname. To view which models are available in the current release, use `runner.available_models`. By default, models will be automatically downloaded if there are not yet in the correct folder. If you want to turn this behavior of, you can set `OximachineRunner(automatic_download=False)`. If you then need a model, you can manually download it using a function from the utils module.
 
-- `votingclassifier.joblib` is the model that is currently deployed. It is a voting classifier with four different base estimators
-- `scaler.joblib` is the standard scaler
-- `KAJZIH_freeONLY.cif` and `ACODAA.cif` are some test structures.
+The `run_oximachine` function accepts `pymatgen.Structure`, `ase.Atoms` and `str` as well as `os.PathLike`. Latter two are expected to be filepaths to a file that is then parsed with `pymatgen`.
