@@ -12,6 +12,7 @@ New
 
 Changes
 ~~~~~~~
+- Chore: updating docstrings. [Kevin]
 - Chore: tests migrated to new API. [Kevin]
 - Chore: deleting files. [Kevin]
 - Chore: preparing for all CSD model. [Kevin]
