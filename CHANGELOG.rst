@@ -2,11 +2,20 @@ Changelog
 =========
 
 
+v1.0.2 (2020-09-01)
+-------------------
+
+Changes
+~~~~~~~
+- Chore: updated readme. [Kevin]
+
+
 v1.0.1 (2020-09-01)
 -------------------
 
 Changes
 ~~~~~~~
+- Chore: updated changelog. [Kevin]
 - Chore: updated example for new API. [Kevin]
 - Chore: updating manifest. [Kevin]
 
