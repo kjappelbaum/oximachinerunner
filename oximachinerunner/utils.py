@@ -49,7 +49,7 @@ def cbk_for_urlretrieve(a, b, c):
 
 def download_model(url, destination, md5):
     if not model_exists(destination, md5):
-        print('{} are not exist or md5 is wrong.'.format(destination))
+        print('{} are does not exist or md5 is wrong.'.format(destination))
         print('Download file from {}'.format(url))
         try:
             basedir = Path(destination).parent
