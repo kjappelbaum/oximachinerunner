@@ -2,8 +2,8 @@ Changelog
 =========
 
 
-(unreleased)
-------------
+v1.0.0 (2020-09-01)
+-------------------
 
 New
 ~~~
@@ -12,11 +12,19 @@ New
 
 Changes
 ~~~~~~~
+- Chore: dirty commit for checkout. [Kevin]
+- Chore: preparing merge with master and new release. [Kevin]
 - Chore: updating docstrings. [Kevin]
 - Chore: tests migrated to new API. [Kevin]
 - Chore: deleting files. [Kevin]
 - Chore: preparing for all CSD model. [Kevin]
 - Chore: preparing for all CSD model. [Kevin]
+
+Other
+~~~~~
+- Merge branch 'master' into multiple_models. [Kevin]
+
+  - preparing release of the new API
 
 
 v0.2.6 (2020-08-26)
