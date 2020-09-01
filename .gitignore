@@ -535,4 +535,4 @@ MigrationBackup/
 
 # End of https://www.gitignore.io/api/vim,linux,macos,python,visualstudio,visualstudiocode
 
-oximachinerunner/assets/20200823-161001_ensemble_0.joblib
+*.joblib
