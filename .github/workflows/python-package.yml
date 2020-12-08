@@ -11,10 +11,11 @@ on:
 
 jobs:
   build:
-    runs-on: [macOS-latest, ubuntu-latest]
     strategy:
       matrix:
+        os: [macOS-latest, ubuntu-latest]
         python-version: [3.7, 3.8]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v2
