@@ -4,7 +4,7 @@
 import os
 import sys
 import warnings
-from typing import Union
+from typing import Tuple, Union
 
 import joblib
 import numpy as np
@@ -215,14 +215,14 @@ class OximachineRunner:
                  ASE atom objects and a filepath in a fileformat that can be read by ase"
             )
 
-    def _run_oximachine(self, structure: Structure) -> Union[list, list, list]:
+    def _run_oximachine(self, structure: Structure) -> Tuple[list, list, list]:
         """Run the oximachine on one structure
 
         Args:
             structure (Structure): pymatgen Structure object
 
         Returns:
-            Union[list, list, list]: list of oxidation states, list of metal indices,
+            Tuple[list, list, list]: list of oxidation states, list of metal indices,
             list of metal symbols
         """
         with warnings.catch_warnings():

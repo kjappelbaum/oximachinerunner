@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # pylint: disable=invalid-name, missing-docstring
-
-from __future__ import absolute_import
-
 import io
 import os
 
