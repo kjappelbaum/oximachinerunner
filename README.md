@@ -2,10 +2,11 @@
 
 [![Actions Status](https://github.com/kjappelbaum/oximachinerunner/workflows/Python%20package/badge.svg)](https://github.com/kjappelbaum/oximachinerunner/actions)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kjappelbaum/oximachinerunner/master?filepath=examples%2Fexample.ipynb)
+[![Documentation Status](https://readthedocs.org/projects/oximachinerunner/badge/?version=latest)](https://oximachinerunner.readthedocs.io/en/latest/?badge=latest)
+[![codecov](https://codecov.io/gh/kjappelbaum/pyepal/branch/master/graph/badge.svg?token=BL2CF4HQ06)](https://codecov.io/gh/kjappelbaum/oximachinerunner)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/oximachinerunner)
 
-_oximachine for AiiDA lab_: Core functionalities of oximachine with stripped dependencies.
-
-_**Warning:** This model works excellent on a test set but it might give fully unphysical predictions in some cases when it is used outside the domain of applicability (structures similar to the ones in the MOF subset of the CSD). This is currently estimated with an uncertainty vote. Consider it in alpha phase_
+_**Warning:** This model works excellent on a test set but it might give fully unphysical predictions in some cases when it is used outside the domain of applicability (structures similar to the ones in the MOF subset of the CSD). This is currently estimated with an uncertainty vote. Consider it in beta phase_
 
 ## Installation
 
