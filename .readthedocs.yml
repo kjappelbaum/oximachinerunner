@@ -19,6 +19,6 @@ formats:
 
 # Need to install the package itself such that the entry points are installed and the API doc can build properly
 python:
-  version: 3.8
+  version: 3.7
   install:
     - requirements: docs/requirements.txt
