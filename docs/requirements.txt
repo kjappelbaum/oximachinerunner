@@ -6,4 +6,4 @@ oximachine_featurizer>=0.2.2
 ipywidgets
 traitlets
 xgboost
-numpy==1.16
+numpy==1.19.4
