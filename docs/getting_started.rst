@@ -9,12 +9,14 @@ We recommend installing oximachinerunner in a clean virtual environment environm
 You can install the latest stable release from PyPi using
 
 .. code-block:: bash
+
     pip install oximachinerunner
 
 
 or the latest development version using
 
 .. code-block:: bash
+
     pip install git+https://github.com/kjappelbaum/oximachinerunner.git
 
 
@@ -25,6 +27,7 @@ Running Inference
 The most common use case for oximachinerunner is to estimate the oxidation states for metal cation in a crystal structure. To do so, you only need the following lines of code
 
 .. code-block:: python
+
     from oximachinerunner import OximachineRunner
 
     oximachine_instance = OximachineRunner()

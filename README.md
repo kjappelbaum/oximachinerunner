@@ -6,7 +6,6 @@
 [![codecov](https://codecov.io/gh/kjappelbaum/pyepal/branch/master/graph/badge.svg?token=BL2CF4HQ06)](https://codecov.io/gh/kjappelbaum/oximachinerunner)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/oximachinerunner)
 
-
 ## Installation
 
 Ideally, you install everything in a clean environment, e.g., using conda
@@ -60,6 +59,6 @@ If you want to turn this behavior of, you can set `OximachineRunner(automatic_do
 
 The `run_oximachine` function accepts `pymatgen.Structure`, `ase.Atoms` and `str` as well as `os.PathLike`. Latter two are expected to be filepaths to a file that is then parsed with `pymatgen`.
 
-
 ## Reference
+
 Jablonka, Kevin Maik; Ongari, Daniele; Moosavi, Seyed Mohamad; Smit, Berend (2020): Using Collective Knowledge to Assign Oxidation States. ChemRxiv. Preprint. https://doi.org/10.26434/chemrxiv.11604129.v1
