@@ -1,3 +1,4 @@
+name: oximachinerunner
 channels:
   - conda-forge
   - defaults
