@@ -21,7 +21,7 @@ Confirm with `y` when asked to do so, then activate with `conda activate test_ox
 ### Latest, development, version
 
 ```(bash)
-pip install git+git@github.com:kjappelbaum/oximachinerunner.git
+pip install git+https://github.com/kjappelbaum/oximachinerunner.git
 ```
 
 ### Latest stable release
