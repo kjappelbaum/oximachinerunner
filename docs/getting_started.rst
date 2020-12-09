@@ -40,3 +40,14 @@ If you use the package for the first time, it will automatically download the mo
 
 Additional information
 ========================
+
+
+ipython widget
+===============
+
+
+
+Caveats
+=========
+
+This model works excellent on a test set but it might give fully unphysical predictions in some cases when it is used outside the domain of applicability (structures similar to the ones in the MOF subset of the CSD). This is currently estimated with an uncertainty vote.
