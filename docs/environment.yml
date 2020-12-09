@@ -1,0 +1,16 @@
+name: oximachinerunner
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7
+  - pip
+  - pip:
+      - oximachine_featurizer>=0.2.2
+      - ipywidgets~=7.5.1
+      - traitlets~=4.3.3
+      - xgboost~=1.2.0
+      - sphinx~=3.3.1
+      - sphinx-book-theme~=0.0.39
+      - sphinx-autodoc-typehints~=1.11.1
+      - sphinx-copybutton~=0.3.1
