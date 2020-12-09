@@ -34,7 +34,7 @@ EXTRAS = {
         "sphinx~=3.3.1",
         "sphinx-book-theme~=0.0.39",
         "sphinx-autodoc-typehints~=1.11.1",
-        "sphinx-copybutton~0.3.1",
+        "sphinx-copybutton~=0.3.1",
     ],
 }
 
