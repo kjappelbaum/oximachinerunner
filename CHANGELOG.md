@@ -1,5 +1,15 @@
 # Changelog
 
+### [1.0.3](https://www.github.com/kjappelbaum/oximachinerunner/compare/v1.0.2...v1.0.3) (2020-12-09)
+
+
+### Documentation
+
+* added badges to readme ([dc916a2](https://www.github.com/kjappelbaum/oximachinerunner/commit/dc916a26aa8547dd9b54d3c57c8710a08e3428e0))
+* fixing typos ([52ceb96](https://www.github.com/kjappelbaum/oximachinerunner/commit/52ceb9697f1879c526ed046e1d4fa5ca86418d52))
+* updating docs and readme ([55a33f2](https://www.github.com/kjappelbaum/oximachinerunner/commit/55a33f2ed098a29806989bfac2e8168e9a352dc9))
+* updating docs and readme ([c37de73](https://www.github.com/kjappelbaum/oximachinerunner/commit/c37de7370075c0b1aaf603d13051d5f50f6f3f49))
+
 ## v1.0.2 (2020-09-01)
 
 ### Changes
