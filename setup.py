@@ -28,7 +28,7 @@ EXTRAS = {
         "pytest~=6.0.1",
         "versioneer~=0.18",
         "isort~=4.3.21",
-        "black~=20",
+        "black~=20.7",
     ],
     "docs": [
         "sphinx~=3.3.1",
