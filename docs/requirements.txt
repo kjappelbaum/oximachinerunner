@@ -1,8 +1,0 @@
-sphinx
-sphinx-book-theme
-sphinx-autodoc-typehints
-sphinx-copybutton
-oximachine_featurizer>=0.2.2
-ipywidgets
-traitlets
-xgboost

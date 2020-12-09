@@ -14,7 +14,7 @@ DESCRIPTION = "Run the oximachine"
 URL = "https://github.com/kjappelbaum/oximachinerunner"
 EMAIL = "kevin.jablonka@epfl.ch"
 AUTHOR = "Kevin M. Jablonka, Daniele Ongari, Mohamad Moosavi, Berend Smit"
-REQUIRES_PYTHON = ">=3.7.0,<3.8.0"
+REQUIRES_PYTHON = ">=3.7,<=3.9"
 
 # What packages are required for this module to be executed?
 with open("requirements.txt", "r") as fh:
@@ -22,12 +22,19 @@ with open("requirements.txt", "r") as fh:
 
 # What packages are optional?
 EXTRAS = {
-    "dev": ["pre-commit", "pylint", "pytest", "versioneer", "isort", "black"],
+    "dev": [
+        "pre-commit~=2.6.0",
+        "pylint~=2.5.3",
+        "pytest~=6.0.1",
+        "versioneer~=0.18",
+        "isort~=4.3.21",
+        "black~=20",
+    ],
     "docs": [
-        "sphinx",
-        "sphinx-book-theme",
-        "sphinx-autodoc-typehints",
-        "sphinx-copybutton",
+        "sphinx~=3.3.1",
+        "sphinx-book-theme~=0.0.39",
+        "sphinx-autodoc-typehints~=1.11.1",
+        "sphinx-copybutton~0.3.1",
     ],
 }
 
