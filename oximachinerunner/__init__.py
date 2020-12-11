@@ -9,7 +9,7 @@ from typing import Tuple, Union
 import joblib
 import numpy as np
 from ase import Atoms
-from oximachine_featurizer.featurize import FeatureCollector, GetFeatures
+from oximachine_featurizer import featurize
 from pymatgen import Structure
 from pymatgen.io.ase import AseAtomsAdaptor
 
@@ -159,25 +159,7 @@ class OximachineRunner:
         Returns:
             Union[np.array, list, list]: [description]
         """
-        get_feat = GetFeatures(structure, "")
-        features = get_feat.return_features()
-        metal_indices = get_feat.metal_indices
-        X = []
-        feat_dict_list = FeatureCollector.create_dict_for_feature_table_from_dict(
-            features
-        )
-        for feat_dict in feat_dict_list:
-            X.append(feat_dict["feature"])
-
-        X = np.vstack(X)
-        (
-            X,
-            _,
-        ) = FeatureCollector._select_features_return_names(  # pylint:disable=protected-access
-            self.featureset, X
-        )
-
-        metals = [site.species_string for site in get_feat.metal_sites]
+        X, metal_indices, metals = featurize(structure, self.featureset)
         return X, metal_indices, metals
 
     def run_oximachine(self, structure) -> Union[list, list, list]:
@@ -200,13 +182,9 @@ class OximachineRunner:
             s = AseAtomsAdaptor.get_structure(structure)
             return self._run_oximachine(s)
         elif isinstance(structure, str):
-            # ToDo: Potentially replace the parser with c2x\
-            # --- but it is unclear how to achieve Mac/Windows/Linux compatibility here
             s = Structure.from_file(structure)
             return self._run_oximachine(s)
         elif isinstance(structure, os.PathLike):
-            # ToDo: Potentially replace the parser with c2x\
-            # --- but it is unclear how to achieve Mac/Windows/Linux compatibility here
             s = Structure.from_file(structure)
             return self._run_oximachine(s)
         else:
@@ -229,7 +207,7 @@ class OximachineRunner:
             warnings.simplefilter("ignore")
             X, metal_indices, metal_symbols = self._featurize_single(
                 structure
-            )  # pylint:disable=protected-access
+            )  # pylint:disable=protected-access,invalid-name
 
             prediction = self._make_predictions(X)  # pylint:disable=protected-access
 
