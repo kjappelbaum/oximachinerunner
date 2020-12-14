@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-# pylint:disable=invalid-name
+# pylint:disable=wrong-import-position
 """Implements methods to use oximachine as part of a Python package"""
 import os
 import sys
 import warnings
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 from collections import OrderedDict
 from typing import Tuple, Union
 
@@ -47,9 +49,8 @@ def _load_file(
         model, typically a sklearn estimator object
     """
     if model_exists(path, md5):  # pylint:disable=no-else-return
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            model = joblib.load(path)
+
+        model = joblib.load(path)
         return model
     else:
         if not automatic_download:
@@ -77,30 +78,32 @@ def load_model(modelname: str, automatic_download: bool = True):
     Returns:
         model, scaler, featurenames
     """
-    # Check if one default model was selected
-    if modelname == "all":
-        modelname = MODEL_DEFAULT_MAPPING["all"]
-    if modelname == "mof":
-        modelname = MODEL_DEFAULT_MAPPING["mof"]
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        # Check if one default model was selected
+        if modelname == "all":
+            modelname = MODEL_DEFAULT_MAPPING["all"]
+        if modelname == "mof":
+            modelname = MODEL_DEFAULT_MAPPING["mof"]
 
-    if modelname not in MODEL_CONFIG.keys():
-        raise ValueError(
-            "A model with name {} does not exist in the configuration.".format(
-                modelname
+        if modelname not in MODEL_CONFIG.keys():
+            raise ValueError(
+                "A model with name {} does not exist in the configuration.".format(
+                    modelname
+                )
             )
-        )
 
-    modelpath = MODEL_CONFIG[modelname]["classifier"]["path"]
-    modelmd5 = MODEL_CONFIG[modelname]["classifier"]["md5"]
-    modelurl = MODEL_CONFIG[modelname]["classifier"]["url"]
+        modelpath = MODEL_CONFIG[modelname]["classifier"]["path"]
+        modelmd5 = MODEL_CONFIG[modelname]["classifier"]["md5"]
+        modelurl = MODEL_CONFIG[modelname]["classifier"]["url"]
 
-    scalerpath = MODEL_CONFIG[modelname]["scaler"]["path"]
-    scalermd5 = MODEL_CONFIG[modelname]["scaler"]["md5"]
-    scalerurl = MODEL_CONFIG[modelname]["scaler"]["url"]
+        scalerpath = MODEL_CONFIG[modelname]["scaler"]["path"]
+        scalermd5 = MODEL_CONFIG[modelname]["scaler"]["md5"]
+        scalerurl = MODEL_CONFIG[modelname]["scaler"]["url"]
 
-    model = _load_file(modelpath, modelmd5, modelurl, automatic_download)
-    scaler = _load_file(scalerpath, scalermd5, scalerurl, automatic_download)
-    featureset = MODEL_CONFIG[modelname]["features"]
+        model = _load_file(modelpath, modelmd5, modelurl, automatic_download)
+        scaler = _load_file(scalerpath, scalermd5, scalerurl, automatic_download)
+        featureset = MODEL_CONFIG[modelname]["features"]
 
     return model, scaler, featureset
 
@@ -126,10 +129,12 @@ class OximachineRunner:
 
     @property
     def available_models(self):
+        """List all the available models."""
         return sorted(list(MODEL_CONFIG.keys()) + list(MODEL_DEFAULT_MAPPING.keys()))
 
     @property
     def default_mapping(self):
+        """Return the default mapping between model name and filename"""
         return MODEL_DEFAULT_MAPPING
 
     def __repr__(self):
@@ -137,7 +142,9 @@ class OximachineRunner:
             __version__, self.modelname, self.md5
         )
 
-    def _make_predictions(self, X: np.array) -> Tuple[list, list, list]:
+    def _make_predictions(  # pylint:disable=invalid-name
+        self, X: np.array
+    ) -> Tuple[list, list, list]:
         """Makes predictions for a set of metal sites.
         Applies the scaler to the feature matrix.
 
@@ -149,7 +156,8 @@ class OximachineRunner:
                 maximum probabilities of the base estimators, the prediction of each
                 base estimator
         """
-        X_scaled = self.scaler.transform(X)
+
+        X_scaled = self.scaler.transform(X)  # pylint:disable=invalid-name
         prediction = self.model.predict(X_scaled)
 
         max_probas = np.max(self.model.predict_proba(X_scaled), axis=1)
@@ -168,8 +176,11 @@ class OximachineRunner:
         Returns:
             Union[np.array, list, list]: [description]
         """
-        X, metal_indices, metals = featurize(structure, self.featureset)
-        return X, metal_indices, metals
+
+        X, metal_indices, metals = featurize(  # pylint:disable=invalid-name
+            structure, self.featureset
+        )
+        return X, metal_indices, metals  # pylint:disable=invalid-name
 
     def run_oximachine(self, structure) -> Union[list, list, list]:
         """Runs oximachine after attempting to guess what structure is
@@ -185,21 +196,22 @@ class OximachineRunner:
             Union[list, list, list]: list of oxidation states, list of metal indices,
             list of metal symbols
         """
+
         if isinstance(structure, Structure):  # pylint:disable=no-else-return
             return self._run_oximachine(structure)
         elif isinstance(structure, Atoms):
-            s = AseAtomsAdaptor.get_structure(structure)
+            s = AseAtomsAdaptor.get_structure(structure)  # pylint:disable=invalid-name
             return self._run_oximachine(s)
         elif isinstance(structure, str):
-            s = Structure.from_file(structure)
+            s = Structure.from_file(structure)  # pylint:disable=invalid-name
             return self._run_oximachine(s)
         elif isinstance(structure, os.PathLike):
-            s = Structure.from_file(structure)
+            s = Structure.from_file(structure)  # pylint:disable=invalid-name
             return self._run_oximachine(s)
         else:
             raise ValueError(
                 "Could not recognize structure! I can read Pymatgen structure objects,\
-                 ASE atom objects and a filepath in a fileformat that can be read by ase"
+                ASE atom objects and a filepath in a fileformat that can be read by ase"
             )
 
     def _run_oximachine(self, structure: Structure) -> OrderedDict:
@@ -214,9 +226,11 @@ class OximachineRunner:
         """
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            X, metal_indices, metal_symbols = self._featurize_single(
-                structure
-            )  # pylint:disable=protected-access,invalid-name
+            (
+                X,  # pylint:disable=protected-access,invalid-name
+                metal_indices,
+                metal_symbols,
+            ) = self._featurize_single(structure)
 
             prediction, max_probas, base_predictions = self._make_predictions(
                 X
