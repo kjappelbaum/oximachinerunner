@@ -4,6 +4,7 @@
 import os
 import sys
 import warnings
+from collections import OrderedDict
 from typing import Tuple, Union
 
 import joblib
@@ -136,7 +137,7 @@ class OximachineRunner:
             __version__, self.modelname, self.md5
         )
 
-    def _make_predictions(self, X: np.array) -> list:
+    def _make_predictions(self, X: np.array) -> Tuple[list, list, list]:
         """Makes predictions for a set of metal sites.
         Applies the scaler to the feature matrix.
 
@@ -144,12 +145,19 @@ class OximachineRunner:
             X (np.array): feature matrix
 
         Returns:
-            list: predictions (this is the vote of the four base estimators)
+            Tuple[list]: predictions (this is the vote of the four base estimators),
+                maximum probabilities of the base estimators, the prediction of each
+                base estimator
         """
         X_scaled = self.scaler.transform(X)
         prediction = self.model.predict(X_scaled)
 
-        return list(prediction)
+        max_probas = np.max(self.model.predict_proba(X_scaled), axis=1)
+        base_predictions = self.model._predict(  # pylint:disable = protected-access
+            X_scaled
+        )  #
+
+        return list(prediction), list(max_probas), list(base_predictions)
 
     def _featurize_single(self, structure: Structure) -> Union[np.array, list, list]:
         """Finds metals in the structure, featurizes the metal sites and collects the features
@@ -194,15 +202,15 @@ class OximachineRunner:
                  ASE atom objects and a filepath in a fileformat that can be read by ase"
             )
 
-    def _run_oximachine(self, structure: Structure) -> Tuple[list, list, list]:
+    def _run_oximachine(self, structure: Structure) -> OrderedDict:
         """Run the oximachine on one structure
 
         Args:
             structure (Structure): pymatgen Structure object
 
         Returns:
-            Tuple[list, list, list]: list of oxidation states, list of metal indices,
-            list of metal symbols
+            OrderedDict: with the keys metal_indices, metal_symbols,
+                prediction, max_probas, base_predictions
         """
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
@@ -210,6 +218,16 @@ class OximachineRunner:
                 structure
             )  # pylint:disable=protected-access,invalid-name
 
-            prediction = self._make_predictions(X)  # pylint:disable=protected-access
+            prediction, max_probas, base_predictions = self._make_predictions(
+                X
+            )  # pylint:disable=protected-access
 
-        return prediction, metal_indices, metal_symbols
+        return OrderedDict(
+            [
+                ("metal_indices", metal_indices),
+                ("metal_symbols", metal_symbols),
+                ("prediction", prediction),
+                ("max_probas", max_probas),
+                ("base_predictions", base_predictions),
+            ]
+        )
