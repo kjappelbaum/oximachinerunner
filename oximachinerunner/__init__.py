@@ -182,7 +182,7 @@ class OximachineRunner:
         )
         return X, metal_indices, metals  # pylint:disable=invalid-name
 
-    def run_oximachine(self, structure) -> Union[list, list, list]:
+    def run_oximachine(self, structure) -> OrderedDict:
         """Runs oximachine after attempting to guess what structure is
 
         Args:
@@ -193,8 +193,8 @@ class OximachineRunner:
             ValueError: In case the format of structure is not implemented
 
         Returns:
-            Union[list, list, list]: list of oxidation states, list of metal indices,
-            list of metal symbols
+            OrderedDict: with the keys metal_indices, metal_symbols,
+                prediction, max_probas, base_predictions
         """
 
         if isinstance(structure, Structure):  # pylint:disable=no-else-return

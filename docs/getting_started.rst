@@ -31,10 +31,10 @@ The most common use case for oximachinerunner is to estimate the oxidation state
     from oximachinerunner import OximachineRunner
 
     oximachine_instance = OximachineRunner()
-    oxidation_states, metal_indices, metal_symbols = oximachine_instance.run_oximachine(<structure>)
+    results = oximachine_instance.run_oximachine(<structure>)
 
 In the code snippet above, :code:`structure` can be a :code:`pymatgen.Structure`, :code:`ase.Atoms` object or a filepath to a `cif`.
-The output of the run will be three lists of identical length: One contains the oxidationstates, the second one contains the indices of the metals, and the third one contains the elemental symbols of the metals.
+The output of the run will be a ordered dictionary with the oxidationstates, the indices of the metals, and the elemental symbols of the metals.
 
 Models
 ------------
