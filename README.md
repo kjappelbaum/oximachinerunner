@@ -10,7 +10,7 @@
 
 Ideally, you install everything in a clean environment, e.g., using conda
 
-```
+```bash
 conda create -n test_oximachine_runner python=3.7
 ```
 
@@ -18,13 +18,13 @@ Confirm with `y` when asked to do so, then activate with `conda activate test_ox
 
 ### Latest, development, version
 
-```(bash)
+```bash
 pip install git+https://github.com/kjappelbaum/oximachinerunner.git
 ```
 
 ### Latest stable release
 
-```(bash)
+```bash
 pip install oximachinerunner
 ```
 
@@ -33,7 +33,7 @@ pip install oximachinerunner
 Note that since version 1 the models are no longer shipped with the PyPi package.
 There is a dedicated function to download the models, which has to be run before the first use. Also, in contrast to version 0, the interface is now object-oriented
 
-```(python)
+```python
 from oximachinerunner import OximachineRunner
 runner = OximachineRunner()
 runner.run_oximachine('oximachinerunner/assets/ACODAA.cif')

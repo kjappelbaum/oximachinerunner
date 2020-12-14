@@ -44,14 +44,6 @@ When you create an instance of the :code:`OximachineRunner` class you can choose
 If you use the package for the first time, it will automatically download the models. You can turn this behavior off by setting :code:`automatic_download=False` in the class initialization.
 
 
-Additional information
------------------------------
-
-ipython widget
---------------------
-
-
-
 Caveats
 -------------
 
