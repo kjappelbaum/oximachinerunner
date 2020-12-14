@@ -121,7 +121,7 @@ class OximachineRunner:
         self.model = model
         self.scaler = scaler
         self.featureset = featureset
-        self.md5 = MODEL_CONFIG[modelname]["classifier"]["md5"]
+        self.md5 = MODEL_CONFIG[MODEL_DEFAULT_MAPPING[modelname]]["classifier"]["md5"]
 
     @property
     def available_models(self):
