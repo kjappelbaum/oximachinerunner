@@ -63,7 +63,7 @@ setup(
     extras_require=EXTRAS,
     packages=find_packages(),
     include_package_data=True,
-    license="GPL",
+    license="MIT",
     classifiers=[
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Topic :: Scientific/Engineering :: Chemistry",

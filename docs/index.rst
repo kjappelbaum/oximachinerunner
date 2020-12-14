@@ -7,7 +7,6 @@ Welcome to oximachinerunner's documentation!
 ============================================
 
 This package can be used to estimate the oxidation states of metals in a structure using a machine learning model. This model was developed to predict the oxidation states of metal cations in MOFs.
-It also provides a basic ipython widget, that is used in `AiiDA lab <https://aiidalab.materialscloud.org/hub/login>`_.
 
 Technical details and case studies are discussed in our preprint
 

@@ -121,6 +121,7 @@ class OximachineRunner:
         self.model = model
         self.scaler = scaler
         self.featureset = featureset
+        self.md5 = MODEL_CONFIG[modelname]["classifier"]["md5"]
 
     @property
     def available_models(self):
@@ -131,8 +132,8 @@ class OximachineRunner:
         return MODEL_DEFAULT_MAPPING
 
     def __repr__(self):
-        return "OximachineRunner (version: {}) with model {}".format(
-            __version__, self.modelname
+        return "OximachineRunner (version: {}) with model {} (md5: {})".format(
+            __version__, self.modelname, self.md5
         )
 
     def _make_predictions(self, X: np.array) -> list:
@@ -167,7 +168,7 @@ class OximachineRunner:
 
         Args:
             structure ([type]): can be a `pymatgen.Structure`, `ase.Atoms` or a filepath as `str` or
-        `os.PathLike`, which we then attempt to parse with pymatgen.
+            `os.PathLike`, which we then attempt to parse with pymatgen.
 
         Raises:
             ValueError: In case the format of structure is not implemented

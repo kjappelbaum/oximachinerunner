@@ -12,6 +12,7 @@ import urllib
 from collections.abc import Iterable
 from functools import partial
 from pathlib import Path
+from typing import Union
 
 import numpy as np
 from pymatgen.core import Element
@@ -19,15 +20,18 @@ from pymatgen.core import Element
 from .config import MODEL_CONFIG
 
 
-def md5sum(filename):
-    with open(filename, 'rb') as f:
+def md5sum(filename: Union[str, Path]):
+    """Gets the md5 hash of a file"""
+    with open(filename, "rb") as f:
         d = hashlib.md5()
-        for buf in iter(partial(f.read, 128), b''):
+        for buf in iter(partial(f.read, 128), b""):
             d.update(buf)
     return d.hexdigest()
 
 
-def model_exists(path, md5):
+def model_exists(path: Union[Path, str], md5: str):
+    """Checks whether a model if the expected md5 hash
+    exists at the path"""
     is_exist = False
     if os.path.exists(path):
         this_file_md5 = md5sum(path)
@@ -38,19 +42,32 @@ def model_exists(path, md5):
 
 
 def cbk_for_urlretrieve(a, b, c):
-    '''
+    """
     Callback function for showing process
-    '''
+    """
     per = 100.0 * a * b / c
     if per > 100:
         per = 100
-    print('\r%.1f%% of %.2fM' % (per, c / (1024 * 1024)), end='')
+    print("\r%.1f%% of %.2fM" % (per, c / (1024 * 1024)), end="")
 
 
-def download_model(url, destination, md5):
+def download_model(url: str, destination: Union[Path, str], md5: str):
+    """Downloads file from url to destination
+        and checks md5 hash
+
+    Args:
+        url (str): URL
+        destination (Union[Path, str]): Path to which the downloaded file
+            will be saved
+        md5 (str): Expected md5 hash
+
+    Raises:
+        Exception: [description]
+        Exception: [description]
+    """
     if not model_exists(destination, md5):
-        print('{} are does not exist or md5 is wrong.'.format(destination))
-        print('Download file from {}'.format(url))
+        print("{} does not exist or md5 is wrong.".format(destination))
+        print("Download file from {}".format(url))
         try:
             basedir = Path(destination).parent
             if not os.path.exists(basedir):
@@ -58,23 +75,25 @@ def download_model(url, destination, md5):
             urllib.request.urlretrieve(url, destination, cbk_for_urlretrieve)
             this_file_md5 = md5sum(destination)
             if this_file_md5 == md5:
-                print('\nDownload {} file successfully.'.format(destination))
+                print("\nDownload {} file successfully.".format(destination))
             else:
-                raise Exception('Md5 wrong.')
+                raise Exception("Md5 wrong.")
         except Exception as error:
-            infos = '[Error]: Download from {} failed due to {}'.format(url, error)
-            raise Exception(infos)
+            infos = "[Error]: Download from {} failed due to {}".format(url, error)
+            raise Exception(infos) from error
 
 
 def download_all():
     for _, v in MODEL_CONFIG.items():
-        download_model(v['scaler']['url'], v['scaler']['path'], v['scaler']['md5'])
-        download_model(v['classifier']['url'], v['classifier']['path'], v['classifier']['md5'])
+        download_model(v["scaler"]["url"], v["scaler"]["path"], v["scaler"]["md5"])
+        download_model(
+            v["classifier"]["url"], v["classifier"]["path"], v["classifier"]["md5"]
+        )
 
 
 def read_pickle(filepath: str):
     """Does what it says. Nothing more and nothing less. Takes a pickle file path and unpickles it"""
-    with open(filepath, 'rb') as fh:  # pylint: disable=invalid-name
+    with open(filepath, "rb") as fh:  # pylint: disable=invalid-name
         result = pickle.load(fh)  # pylint: disable=invalid-name
     return result
 
@@ -102,8 +121,10 @@ class SymbolNameDict:
 
     def __init__(self):
         with open(
-                os.path.join(Path(__file__).absolute().parent, 'assets', 'periodic_table.json'),
-                'r',
+            os.path.join(
+                Path(__file__).absolute().parent, "assets", "periodic_table.json"
+            ),
+            "r",
         ) as periodic_table_file:
             self.pt_data = json.load(periodic_table_file)
         self.symbol_name_dict = {}
@@ -115,8 +136,8 @@ class SymbolNameDict:
         for key, value in self.pt_data.items():
             if only_metal:
                 if Element(key).is_metal:
-                    self.symbol_name_dict[key] = value['Name'].lower()
+                    self.symbol_name_dict[key] = value["Name"].lower()
             else:
-                self.symbol_name_dict[key] = value['Name'].lower()
+                self.symbol_name_dict[key] = value["Name"].lower()
 
         return self.symbol_name_dict
