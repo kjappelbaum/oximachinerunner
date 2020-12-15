@@ -13,16 +13,10 @@ On macOS you need to run `brew install libomp` first to enable multithreading fo
 Ideally, you install everything in a clean environment, e.g., using conda
 
 ```bash
-conda create -n test_oximachine_runner python=3.7
+conda create -n test_oximachine_runner python=3.7 -y
 ```
 
-Confirm with `y` when asked to do so, then activate with `conda activate test_oximachine_runner`.
-
-### Latest, development, version
-
-```bash
-pip install git+https://github.com/kjappelbaum/oximachinerunner.git
-```
+Then activate with `conda activate test_oximachine_runner`.
 
 ### Latest stable release
 
@@ -30,40 +24,66 @@ pip install git+https://github.com/kjappelbaum/oximachinerunner.git
 pip install oximachinerunner
 ```
 
+Note that the installation requires significant (>500 MB) storage space since the ensembles use k-nearest neighbors models.
+
+### Development version
+
+```bash
+pip install git+https://github.com/kjappelbaum/oximachinerunner.git
+```
+
+<<<<<<< HEAD
 Note that the installation will require significant (>500 MB) storage space since the ensembles use k-nearest neighbors models.
 
+=======
+>>>>>>> a18a9a6e962931fd780b99230a7407a7b3b722ed
 ## Usage
 
-Note that since version 1 the models are no longer shipped with the PyPi package.
-There is a dedicated function to download the models, which has to be run before the first use. Also, in contrast to version 0, the interface is now object-oriented
+#### Loading the model
 
 ```python
 from oximachinerunner import OximachineRunner
 runner = OximachineRunner()
-runner.run_oximachine('oximachinerunner/assets/ACODAA.cif')
 ```
 
-The function will print for how many sites it will run the model.
+The `OximachineRunner` can be initialized with a modelname from `runner.available_models`.
 
-It will return a `OrderedDict` with:
-
-- A list of oxidation state predictions
-- A list of indices of the metal sites
-- Strings indicating the metal
-- The predictions of the base estimators
-- The estimated probabilites
-
-The `OximachineRunner` can be initialized with a modelname. To view which models are available in the current release, use `runner.available_models`. By default, models will be automatically downloaded if there are not yet in the correct folder. You should output as follows
-
+By default, models will be automatically downloaded if there are not yet in the correct folder:
 ```
 /Users/kevinmaikjablonka/opt/miniconda3/envs/test_oximachine_runner/lib/python3.7/site-packages/oximachinerunner/assets/all_202000830/classifier.joblib are not exist or md5 is wrong.
 Download file from https://www.dropbox.com/s/lc2z4abaycjbbe1/classifier.joblib?dl=1
 2.9% of 527.44M
 ```
+To disable this behavior of, set `OximachineRunner(automatic_download=False)` and manually download your model, e.g. using a function from the `utils` module.
 
-If you want to turn this behavior of, you can set `OximachineRunner(automatic_download=False)`. If you then need a model, you can manually download it using a function from the `utils` module.
+#### Predicting oxidation states
 
-The `run_oximachine` function accepts `pymatgen.Structure`, `ase.Atoms` and `str` as well as `os.PathLike`. Latter two are expected to be filepaths to a file that is then parsed with `pymatgen`.
+The `run_oximachine` function accepts `pymatgen.Structure`, `ase.Atoms` and `str` as well as `os.PathLike`.
+The latter two are expected to be paths to a file that is then parsed with `pymatgen`.
+
+```python
+runner.run_oximachine('oximachinerunner/assets/ACODAA.cif')
+```
+
+The function prints for how many sites it will run the model.
+```
+featurize.py: iterating over 6 metal sites
+```
+
+It returns an `OrderedDict` with the fields:
+
+- `metal_indices`: A list of indices of the metal sites
+- `metal_symbols`: A list of symbols of the metal atoms
+- `prediction`: A list of oxidation state predictions
+- `max_probabs`: For each metal site the maximum confidence of all 4 models.
+- `base_predictions`: For each metal site a list of the oxidation state predictions for each of the 4 models.
+
+### Development setup
+
+```
+git clone https://github.com/kjappelbaum/oximachinerunner
+pip install -e .[dev]
+```
 
 ## Reference
 
