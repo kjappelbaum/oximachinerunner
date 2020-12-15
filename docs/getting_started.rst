@@ -4,7 +4,7 @@ Getting Started
 Installation
 ---------------
 
-We recommend installing oximachinerunner in a clean virtual environment environment (e.g., a `conda environment <https://docs.conda.io/projects/conda/en/latest/index.html>`_)
+We recommend installing oximachinerunner in a clean virtual environment environment (e.g., a `conda environment <https://docs.conda.io/projects/conda/en/latest/index.html>`_). On macOS you need to run `brew install libomp` first to enable multithreading for the `XGBoost` library.
 
 You can install the latest stable release from PyPi using
 
