@@ -20,6 +20,8 @@ or the latest development version using
     pip install git+https://github.com/kjappelbaum/oximachinerunner.git
 
 
+Note that the installation will take significant (>500 MB) hard drive storage as the models contain a k-nearest neighbors esimator that basically stores the complete training set.
+
 
 Running Inference
 ---------------------
