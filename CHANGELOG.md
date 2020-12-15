@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.2](https://www.github.com/kjappelbaum/oximachinerunner/compare/v1.1.1...v1.1.2) (2020-12-15)
+
+
+### Miscellaneous
+
+* cleanup ([282c69c](https://www.github.com/kjappelbaum/oximachinerunner/commit/282c69cb25b24c7f6e7076efdd5ae6db4ddc1b67))
+
 ### [1.1.1](https://www.github.com/kjappelbaum/oximachinerunner/compare/v1.1.0...v1.1.1) (2020-12-15)
 
 
