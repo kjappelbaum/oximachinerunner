@@ -1,5 +1,14 @@
 # Changelog
 
+### [1.1.3](https://www.github.com/kjappelbaum/oximachinerunner/compare/v1.1.2...v1.1.3) (2020-12-15)
+
+
+### Miscellaneous
+
+* allow to access the feature names ([e70a25a](https://www.github.com/kjappelbaum/oximachinerunner/commit/e70a25af40495b19fd39e62ebdd87eeeb794048b))
+* allow to access the feature names ([5dabb21](https://www.github.com/kjappelbaum/oximachinerunner/commit/5dabb21ab659cd8a3d66caa0508da6e7820f43a4))
+* extending tests, ignoring vscode ([92d53a3](https://www.github.com/kjappelbaum/oximachinerunner/commit/92d53a3cd8afa86ccaf6fbc9bb20046d2dd76367))
+
 ### [1.1.2](https://www.github.com/kjappelbaum/oximachinerunner/compare/v1.1.1...v1.1.2) (2020-12-15)
 
 
