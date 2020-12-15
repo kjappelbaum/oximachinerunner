@@ -1,5 +1,6 @@
 {
     "python.linting.pylintEnabled": true,
     "python.formatting.provider": "yapf",
-    "restructuredtext.confPath": ""
+    "restructuredtext.confPath": "",
+    "python.pythonPath": "/Users/leopold/Applications/miniconda3/envs/aiida-lsmo-2/bin/python"
 }
