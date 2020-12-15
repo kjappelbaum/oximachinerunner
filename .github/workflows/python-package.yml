@@ -13,12 +13,16 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macOS-latest]
         python-version: [3.6, 3.7, 3.8]
     runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v2
+      - name: Install xgboost support
+        run: |
+          if [ "$RUNNER_OS" == "macOS" ]; then
+          brew install libomp
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
