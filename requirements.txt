@@ -1,2 +1,2 @@
-oximachine_featurizer>=0.2.10
+oximachine_featurizer>=0.2.11
 xgboost~=1.3.0

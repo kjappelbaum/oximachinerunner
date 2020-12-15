@@ -7,12 +7,13 @@ import warnings
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 from collections import OrderedDict
-from typing import Tuple, Union
+from typing import List, Tuple, Union
 
 import joblib
 import numpy as np
 from ase import Atoms
 from oximachine_featurizer import featurize
+from oximachine_featurizer.featurize import get_feature_names
 from pymatgen import Structure
 from pymatgen.io.ase import AseAtomsAdaptor
 
@@ -131,6 +132,11 @@ class OximachineRunner:
     def available_models(self):
         """List all the available models."""
         return sorted(list(MODEL_CONFIG.keys()) + list(MODEL_DEFAULT_MAPPING.keys()))
+
+    @property
+    def feature_names(self) -> List[str]:
+        """Get a list of feature names"""
+        return get_feature_names(self.featureset)
 
     @property
     def default_mapping(self):

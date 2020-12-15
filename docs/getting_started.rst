@@ -36,7 +36,14 @@ The most common use case for oximachinerunner is to estimate the oxidation state
     results = oximachine_instance.run_oximachine(<structure>)
 
 In the code snippet above, :code:`structure` can be a :code:`pymatgen.Structure`, :code:`ase.Atoms` object or a filepath to a `cif`.
-The output of the run will be a ordered dictionary with the oxidationstates, the indices of the metals, and the elemental symbols of the metals.
+The output of the run will be a `OrderedDict` with:
+
+- A list of oxidation state predictions
+- A list of indices of the metal sites
+- Strings indicating the metal
+- The predictions of the base estimators
+- The estimated probabilites
+
 
 Models
 ------------

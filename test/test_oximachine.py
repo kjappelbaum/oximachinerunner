@@ -94,3 +94,5 @@ def test_oximachine():
     assert output["metal_indices"] == [0, 1]
     assert output["metal_symbols"] == ["Fe", "Fe"]
     assert output["base_predictions"] == [[2, 2, 2, 2], [2, 2, 2, 2]]
+
+    assert isinstance(runner.feature_names, list)
