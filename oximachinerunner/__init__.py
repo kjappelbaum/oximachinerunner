@@ -161,10 +161,15 @@ class OximachineRunner:
         prediction = self.model.predict(X_scaled)
 
         max_probas = np.max(self.model.predict_proba(X_scaled), axis=1)
-        base_predictions = self.model._predict(  # pylint:disable = protected-access
+        _base_predictions = self.model._predict(  # pylint:disable = protected-access
             X_scaled
         )  #
 
+        base_predictions = []
+        for pred in _base_predictions:
+            base_predictions.append(
+                [self.model.classes[prediction_index] for prediction_index in pred]
+            )
         return list(prediction), list(max_probas), list(base_predictions)
 
     def _featurize_single(self, structure: Structure) -> Union[np.array, list, list]:
