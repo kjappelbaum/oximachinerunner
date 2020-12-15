@@ -28,6 +28,8 @@ pip install git+https://github.com/kjappelbaum/oximachinerunner.git
 pip install oximachinerunner
 ```
 
+Note that the installation will require significant (>500 MB) storage space since the ensembles use k-nearest neighbors models.
+
 ## Usage
 
 Note that since version 1 the models are no longer shipped with the PyPi package.
@@ -41,11 +43,13 @@ runner.run_oximachine('oximachinerunner/assets/ACODAA.cif')
 
 The function will print for how many sites it will run the model.
 
-It will return a tuple with three elements:
+It will return a `OrderedDict` with:
 
-- A list of oxidation states
+- A list of oxidation state predictions
 - A list of indices of the metal sites
 - Strings indicating the metal
+- The predictions of the base estimators
+- The estimated probabilites
 
 The `OximachineRunner` can be initialized with a modelname. To view which models are available in the current release, use `runner.available_models`. By default, models will be automatically downloaded if there are not yet in the correct folder. You should output as follows
 
