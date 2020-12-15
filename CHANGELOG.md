@@ -1,5 +1,20 @@
 # Changelog
 
+### [1.1.1](https://www.github.com/kjappelbaum/oximachinerunner/compare/v1.1.0...v1.1.1) (2020-12-15)
+
+
+### Bug Fixes
+
+* return the classes instead of indices, closes [#32](https://www.github.com/kjappelbaum/oximachinerunner/issues/32) ([879863f](https://www.github.com/kjappelbaum/oximachinerunner/commit/879863f51a832dd0f8ff3334573bdc0a8e1e73b5))
+
+
+### Miscellaneous
+
+* **deps:** use new oximachine_featurizer ([8307ac8](https://www.github.com/kjappelbaum/oximachinerunner/commit/8307ac82715b12c55169187bf9c6d9b88ebb1985))
+* adding macos go github actions ([44c0110](https://www.github.com/kjappelbaum/oximachinerunner/commit/44c0110b43ef7a701c86a7b1ccd1f83b0dfc2efa))
+* fix typo in gh actions ([db8762f](https://www.github.com/kjappelbaum/oximachinerunner/commit/db8762fd275dc2e537b3ebb6fe2ab56ac1b2ae94))
+* removed widget ([2b2727e](https://www.github.com/kjappelbaum/oximachinerunner/commit/2b2727e6cb832afdcec1e05b921a83ad9a4cc172))
+
 ## [1.1.0](https://www.github.com/kjappelbaum/oximachinerunner/compare/v1.0.2...v1.1.0) (2020-12-15)
 
 
