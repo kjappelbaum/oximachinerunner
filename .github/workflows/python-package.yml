@@ -22,7 +22,8 @@ jobs:
       - name: Install xgboost support
         run: |
           if [ "$RUNNER_OS" == "macOS" ]; then
-          brew install libomp
+          brew install libomp;
+          fi
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
