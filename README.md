@@ -8,6 +8,8 @@
 
 ## Installation
 
+On macOS you need to run `brew install libomp` first to enable multithreading for the `XGBoost` library.
+
 Ideally, you install everything in a clean environment, e.g., using conda
 
 ```bash
@@ -29,7 +31,6 @@ pip install oximachinerunner
 ```
 
 Note that the installation will require significant (>500 MB) storage space since the ensembles use k-nearest neighbors models.
-
 ## Usage
 
 Note that since version 1 the models are no longer shipped with the PyPi package.
