@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.3](https://www.github.com/kjappelbaum/oximachinerunner/compare/v1.1.2...v1.1.3) (2020-12-15)
+
+
+### Miscellaneous
+
+* extending tests, ignoring vscode ([92d53a3](https://www.github.com/kjappelbaum/oximachinerunner/commit/92d53a3cd8afa86ccaf6fbc9bb20046d2dd76367))
+
 ### [1.1.2](https://www.github.com/kjappelbaum/oximachinerunner/compare/v1.1.1...v1.1.2) (2020-12-15)
 
 
