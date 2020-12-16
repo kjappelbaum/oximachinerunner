@@ -22,6 +22,7 @@ or the latest development version using
 
 Note that the installation will take significant (>500 MB) hard drive storage as the models contain a k-nearest neighbors esimator that basically stores the complete training set.
 
+Some parts of the code are accelerated using just-in-time compilation (jit) using numba. This can benefit from `threading layers <https://numba.pydata.org/numba-doc/latest/user/threading-layer.html>`_. You can enable this using :code:`pip install tbb`. If you do not do so, you might see warnings like :code:`The TBB threading layer requires TBB version 2019.5 or later`.
 
 Running Inference
 ---------------------
