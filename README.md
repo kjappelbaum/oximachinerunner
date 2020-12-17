@@ -43,12 +43,14 @@ runner = OximachineRunner()
 
 The `OximachineRunner` can be initialized with a modelname from `runner.available_models`.
 
-By default, models will be automatically downloaded if there are not yet in the correct folder:
+By default, models will be automatically downloaded (upon first use) if there are not yet in the correct folder:
+
 ```
 /Users/kevinmaikjablonka/opt/miniconda3/envs/test_oximachine_runner/lib/python3.7/site-packages/oximachinerunner/assets/all_202000830/classifier.joblib are not exist or md5 is wrong.
 Download file from https://www.dropbox.com/s/lc2z4abaycjbbe1/classifier.joblib?dl=1
 2.9% of 527.44M
 ```
+
 To disable this behavior of, set `OximachineRunner(automatic_download=False)` and manually download your model, e.g. using a function from the `utils` module.
 
 #### Predicting oxidation states
@@ -61,6 +63,7 @@ runner.run_oximachine('oximachinerunner/assets/ACODAA.cif')
 ```
 
 The function prints for how many sites it will run the model.
+
 ```
 featurize.py: iterating over 6 metal sites
 ```

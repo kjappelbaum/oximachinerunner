@@ -137,6 +137,10 @@ class OximachineRunner:
             )
             self.loaded = True
 
+    def load_model(self):
+        """Load the model and populate the namespace with the model objects."""
+        self._load_model()
+
     @property
     def available_models(self):
         """List all the available models."""
@@ -148,7 +152,7 @@ class OximachineRunner:
         if self.featureset is not None:
             return get_feature_names(self.featureset)
 
-        raise ValueError("Model is not loaded, you can load it with `._load_model()`")
+        raise ValueError("Model is not loaded, you can load it with `.load_model()`")
 
     @property
     def default_mapping(self):
