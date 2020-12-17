@@ -1,5 +1,14 @@
 # Changelog
 
+### [1.1.4](https://www.github.com/kjappelbaum/oximachinerunner/compare/v1.1.3...v1.1.4) (2020-12-17)
+
+
+### Miscellaneous
+
+* cleanup ([cbdee83](https://www.github.com/kjappelbaum/oximachinerunner/commit/cbdee83fb9ddb601475fc6a0dfc7bfbf039a6eef))
+* update example notebook ([0472238](https://www.github.com/kjappelbaum/oximachinerunner/commit/04722385b4d11e936018c86b04ce574937bc85ea))
+* updating docs ([79ecf19](https://www.github.com/kjappelbaum/oximachinerunner/commit/79ecf19a3cbda8c8f7633dd9807d4199f774b10e))
+
 ### [1.1.3](https://www.github.com/kjappelbaum/oximachinerunner/compare/v1.1.2...v1.1.3) (2020-12-15)
 
 
