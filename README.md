@@ -32,11 +32,6 @@ Note that the installation requires significant (>500 MB) storage space since th
 pip install git+https://github.com/kjappelbaum/oximachinerunner.git
 ```
 
-<<<<<<< HEAD
-Note that the installation will require significant (>500 MB) storage space since the ensembles use k-nearest neighbors models.
-
-=======
->>>>>>> a18a9a6e962931fd780b99230a7407a7b3b722ed
 ## Usage
 
 #### Loading the model
