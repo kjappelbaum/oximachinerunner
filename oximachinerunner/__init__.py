@@ -121,12 +121,21 @@ class OximachineRunner:
                 the .available_models property
             automatic_download (bool, optional): [description]. Defaults to True.
         """
-        model, scaler, featureset = load_model(modelname, automatic_download)
+        model, scaler, featureset = None, None, None
         self.modelname = modelname
+        self._automatic_download = automatic_download
         self.model = model
         self.scaler = scaler
         self.featureset = featureset
+        self.loaded = False
         self.md5 = MODEL_CONFIG[MODEL_DEFAULT_MAPPING[modelname]]["classifier"]["md5"]
+
+    def _load_model(self):
+        if not self.loaded:
+            self.model, self.scaler, self.featureset = load_model(
+                self.modelname, self._automatic_download
+            )
+            self.loaded = True
 
     @property
     def available_models(self):
@@ -136,7 +145,10 @@ class OximachineRunner:
     @property
     def feature_names(self) -> List[str]:
         """Get a list of feature names"""
-        return get_feature_names(self.featureset)
+        if self.featureset is not None:
+            return get_feature_names(self.featureset)
+
+        raise ValueError("Model is not loaded, you can load it with `._load_model()`")
 
     @property
     def default_mapping(self):
@@ -162,7 +174,7 @@ class OximachineRunner:
                 maximum probabilities of the base estimators, the prediction of each
                 base estimator
         """
-
+        self._load_model()
         X_scaled = self.scaler.transform(X)  # pylint:disable=invalid-name
         prediction = self.model.predict(X_scaled)
 
@@ -187,7 +199,7 @@ class OximachineRunner:
         Returns:
             Union[np.array, list, list]: [description]
         """
-
+        self._load_model()
         X, metal_indices, metals = featurize(  # pylint:disable=invalid-name
             structure, self.featureset
         )
