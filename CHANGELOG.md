@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.2.0](https://www.github.com/kjappelbaum/oximachinerunner/compare/v1.1.3...v1.2.0) (2020-12-18)
+
+
+### Features
+
+* only loading model when needed ([#44](https://www.github.com/kjappelbaum/oximachinerunner/issues/44)) ([dbbb89d](https://www.github.com/kjappelbaum/oximachinerunner/commit/dbbb89d54b3adf6ced553dc28ff03a322406d2bb))
+
+
+### Miscellaneous
+
+* bumping version of oximachine_featurizer ([80b0def](https://www.github.com/kjappelbaum/oximachinerunner/commit/80b0def70d29b7c205736ab622e8713172c55fa2))
+* cleanup ([cbdee83](https://www.github.com/kjappelbaum/oximachinerunner/commit/cbdee83fb9ddb601475fc6a0dfc7bfbf039a6eef))
+* cleanup model loading implementation and docstrings ([#47](https://www.github.com/kjappelbaum/oximachinerunner/issues/47)) ([a8723eb](https://www.github.com/kjappelbaum/oximachinerunner/commit/a8723ebfecaa59ea58f85aba47709aee9ac88a67))
+* update example notebook ([0472238](https://www.github.com/kjappelbaum/oximachinerunner/commit/04722385b4d11e936018c86b04ce574937bc85ea))
+* updating docs ([79ecf19](https://www.github.com/kjappelbaum/oximachinerunner/commit/79ecf19a3cbda8c8f7633dd9807d4199f774b10e))
+
 ### [1.1.3](https://www.github.com/kjappelbaum/oximachinerunner/compare/v1.1.2...v1.1.3) (2020-12-15)
 
 
