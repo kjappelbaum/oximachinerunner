@@ -16,6 +16,7 @@ from oximachine_featurizer import featurize
 from oximachine_featurizer.featurize import get_feature_names
 from pymatgen import Structure
 from pymatgen.io.ase import AseAtomsAdaptor
+from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 import oximachinerunner.learnmofox as learnmofox
 
