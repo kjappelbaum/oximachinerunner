@@ -7,6 +7,11 @@ from oximachinerunner import OximachineRunner
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
+def test_model_dict():
+    runner = OximachineRunner()
+    assert isinstance(runner.featureset, list)
+
+
 def test_oximachine():
     runner = OximachineRunner()
     output = runner.run_oximachine(

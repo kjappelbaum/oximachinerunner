@@ -7,7 +7,7 @@ import warnings
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 from collections import OrderedDict
-from typing import List, Tuple, Union
+from typing import Dict, List, Tuple, Union
 
 import joblib
 import numpy as np
@@ -32,7 +32,7 @@ THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 
 def _load_file(
     path, md5: str, url: str, automatic_download: bool = True
-):  # pylint:disable=inconsistent-return-statements
+) -> object:  # pylint:disable=inconsistent-return-statements
     """[summary]
 
     Args:
@@ -65,7 +65,7 @@ def _load_file(
         return _load_file(path, md5, url, automatic_download)
 
 
-def load_model(modelname: str, automatic_download: bool = True):
+def load_model(modelname: str, automatic_download: bool = True) -> Tuple:
     """Orchestrates the loading of the model and the scaler
 
     Args:
@@ -121,41 +121,56 @@ class OximachineRunner:
                 the .available_models property
             automatic_download (bool, optional): [description]. Defaults to True.
         """
-        model, scaler, featureset = None, None, None
         self.modelname = modelname
         self._automatic_download = automatic_download
-        self.model = model
-        self.scaler = scaler
-        self.featureset = featureset
-        self.loaded = False
         self.md5 = MODEL_CONFIG[MODEL_DEFAULT_MAPPING[modelname]]["classifier"]["md5"]
+        self._model_dict = {}
+
+    @property
+    def model(self):
+        """Return the model object with `.predict` method"""
+        return self._get("model")
+
+    @property
+    def scaler(self):
+        """Return the scaler object with `.transform` method"""
+        return self._get("scaler")
+
+    @property
+    def featureset(self) -> List[str]:
+        """Return the list of feature names"""
+        return self._get("featureset")
+
+    def _get(self, key: str):
+        try:
+            return self._model_dict[key]
+        except KeyError:
+            self._load_model()
+            return self._get(key)
 
     def _load_model(self):
-        if not self.loaded:
-            self.model, self.scaler, self.featureset = load_model(
-                self.modelname, self._automatic_download
-            )
-            self.loaded = True
+        (
+            self._model_dict["model"],
+            self._model_dict["scaler"],
+            self._model_dict["featureset"],
+        ) = load_model(self.modelname, self._automatic_download)
 
     def load_model(self):
         """Load the model and populate the namespace with the model objects."""
         self._load_model()
 
     @property
-    def available_models(self):
+    def available_models(self) -> List[str]:
         """List all the available models."""
         return sorted(list(MODEL_CONFIG.keys()) + list(MODEL_DEFAULT_MAPPING.keys()))
 
     @property
     def feature_names(self) -> List[str]:
         """Get a list of feature names"""
-        if self.featureset is not None:
-            return get_feature_names(self.featureset)
-
-        raise ValueError("Model is not loaded, you can load it with `.load_model()`")
+        return get_feature_names(self.featureset)
 
     @property
-    def default_mapping(self):
+    def default_mapping(self) -> Dict[str, str]:
         """Return the default mapping between model name and filename"""
         return MODEL_DEFAULT_MAPPING
 
@@ -165,27 +180,27 @@ class OximachineRunner:
         )
 
     def _make_predictions(  # pylint:disable=invalid-name
-        self, X: np.array
+        self, feature_matrix: np.ndarray
     ) -> Tuple[list, list, list]:
         """Makes predictions for a set of metal sites.
         Applies the scaler to the feature matrix.
 
         Args:
-            X (np.array): feature matrix
+            feature_matrix (np.ndarray): feature matrix (two dimensional,
+            metal sites in rows and features in columns)
 
         Returns:
-            Tuple[list]: predictions (this is the vote of the four base estimators),
+            Tuple[list, list, list]: predictions (this is the vote of the four base estimators),
                 maximum probabilities of the base estimators, the prediction of each
                 base estimator
         """
-        self._load_model()
-        X_scaled = self.scaler.transform(X)  # pylint:disable=invalid-name
-        prediction = self.model.predict(X_scaled)
+        feature_matrix_scaled = self.scaler.transform(feature_matrix)
+        prediction = self.model.predict(feature_matrix_scaled)
 
-        max_probas = np.max(self.model.predict_proba(X_scaled), axis=1)
-        _base_predictions = self.model._predict(  # pylint:disable = protected-access
-            X_scaled
-        )  #
+        max_probas = np.max(self.model.predict_proba(feature_matrix_scaled), axis=1)
+        _base_predictions = self.model._predict(  # pylint:disable=protected-access
+            feature_matrix_scaled
+        )
 
         base_predictions = []
         for pred in _base_predictions:
@@ -194,26 +209,26 @@ class OximachineRunner:
             )
         return list(prediction), list(max_probas), list(base_predictions)
 
-    def _featurize_single(self, structure: Structure) -> Union[np.array, list, list]:
+    def _featurize_single(self, structure: Structure) -> Tuple[np.array, list, list]:
         """Finds metals in the structure, featurizes the metal sites and collects the features
 
         Args:
             structure (pymatgen.Structure): Structure to featurize
 
         Returns:
-            Union[np.array, list, list]: [description]
+            Tuple[np.array, list, list]: Feature array, metal indices, metal symbols
         """
-        self._load_model()
-        X, metal_indices, metals = featurize(  # pylint:disable=invalid-name
-            structure, self.featureset
-        )
-        return X, metal_indices, metals  # pylint:disable=invalid-name
+        feature_matrix, metal_indices, metals = featurize(structure, self.featureset)
+        return feature_matrix, metal_indices, metals
 
-    def run_oximachine(self, structure) -> OrderedDict:
+    def run_oximachine(
+        self, structure: Union[str, os.PathLike, Structure, Atoms]
+    ) -> OrderedDict:
         """Runs oximachine after attempting to guess what structure is
 
         Args:
-            structure ([type]): can be a `pymatgen.Structure`, `ase.Atoms` or a filepath as `str` or
+            structure (Union[str, os.PathLike, Structure, Atoms]):
+            can be a `pymatgen.Structure`, `ase.Atoms` or a filepath as `str` or
             `os.PathLike`, which we then attempt to parse with pymatgen.
 
         Raises:
@@ -227,14 +242,14 @@ class OximachineRunner:
         if isinstance(structure, Structure):  # pylint:disable=no-else-return
             return self._run_oximachine(structure)
         elif isinstance(structure, Atoms):
-            s = AseAtomsAdaptor.get_structure(structure)  # pylint:disable=invalid-name
-            return self._run_oximachine(s)
+            pymatgen_structure = AseAtomsAdaptor.get_structure(structure)
+            return self._run_oximachine(pymatgen_structure)
         elif isinstance(structure, str):
-            s = Structure.from_file(structure)  # pylint:disable=invalid-name
-            return self._run_oximachine(s)
+            pymatgen_structure = Structure.from_file(structure)
+            return self._run_oximachine(pymatgen_structure)
         elif isinstance(structure, os.PathLike):
-            s = Structure.from_file(structure)  # pylint:disable=invalid-name
-            return self._run_oximachine(s)
+            pymatgen_structure = Structure.from_file(structure)
+            return self._run_oximachine(pymatgen_structure)
         else:
             raise ValueError(
                 "Could not recognize structure! I can read Pymatgen structure objects,\
@@ -254,14 +269,20 @@ class OximachineRunner:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             (
-                X,  # pylint:disable=protected-access,invalid-name
+                feature_matrix,
                 metal_indices,
                 metal_symbols,
-            ) = self._featurize_single(structure)
+            ) = self._featurize_single(  # pylint:disable=protected-access
+                structure
+            )
 
-            prediction, max_probas, base_predictions = self._make_predictions(
-                X
-            )  # pylint:disable=protected-access
+            (
+                prediction,
+                max_probas,
+                base_predictions,
+            ) = self._make_predictions(  # pylint:disable=protected-access
+                feature_matrix
+            )
 
         return OrderedDict(
             [
