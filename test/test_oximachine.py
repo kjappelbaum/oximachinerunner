@@ -109,3 +109,16 @@ def test_oximachine():
     assert len(output["prediction"]) == 6
     assert output["metal_indices"][0] == 0
     assert output["metal_indices"][5] == 5
+
+    runner = OximachineRunner()
+    output = runner.run_oximachine(
+        os.path.join(THIS_DIR, "structure_data", "RSM0027.cif")
+    )
+
+    assert output["prediction"] == [3, 3]
+
+    output = runner.run_oximachine(
+        os.path.join(THIS_DIR, "structure_data", "RSM0099.cif")
+    )
+
+    assert output["prediction"] == [3, 3, 3]
