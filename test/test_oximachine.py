@@ -4,6 +4,7 @@ import os
 
 from ase.io import read
 from pymatgen import Structure
+from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 from oximachinerunner import OximachineRunner
 
@@ -138,5 +139,21 @@ def test_oximachine():
     assert output["prediction"] == [3, 3]
 
     output = runner.run_oximachine(atoms)
+
+    assert output["prediction"] == [3, 3]
+
+    # Now, transform the cell
+
+    space_group_analyzer = SpacegroupAnalyzer(pymatgen_structure)
+
+    output = runner.run_oximachine(
+        space_group_analyzer.get_conventional_standard_structure()
+    )
+
+    assert output["prediction"] == [3, 3, 3, 3]
+
+    output = runner.run_oximachine(
+        space_group_analyzer.get_primitive_standard_structure()
+    )
 
     assert output["prediction"] == [3, 3]
