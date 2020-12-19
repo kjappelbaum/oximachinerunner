@@ -29,12 +29,12 @@ MODEL_CONFIG: Dict[str, Dict[str, Any]] = {
     "all_20200830": {
         "scaler": {
             "md5": "aa0e86464ec3ac60449d872097f54c05",
-            "url": "https://www.dropbox.com/s/qz8c06iupx7cy5h/scaler.joblib?dl=1",
+            "url": "https://zenodo.org/record/4361094/files/all_2020830_scaler.joblib?download=1",
             "path": os.path.join(ASSETS_DIR, "all_202000830", "scaler.joblib"),
         },
         "classifier": {
             "md5": "dc0dc74b860878a53fd0f5edf5d1ba57",
-            "url": "https://www.dropbox.com/s/lc2z4abaycjbbe1/classifier.joblib?dl=1",
+            "url": "https://zenodo.org/record/4361094/files/all_2020830_classifier.joblib?download=1",
             "path": os.path.join(ASSETS_DIR, "all_202000830", "classifier.joblib"),
         },
         "features": FEATURES_ALL,
@@ -42,12 +42,12 @@ MODEL_CONFIG: Dict[str, Dict[str, Any]] = {
     "mof_chemarxiv": {
         "scaler": {
             "md5": "c5c22e22137afaa7d815b0162753b424",
-            "url": "https://www.dropbox.com/s/e2x0oqo4id61iff/scaler.joblib?dl=1",
+            "url": "https://zenodo.org/record/4361094/files/mof_chemarxiv_scaler.joblib?download=1",
             "path": os.path.join(ASSETS_DIR, "mof_chemarxiv", "scaler.joblib"),
         },
         "classifier": {
             "md5": "2fee4c35f475fa2f8123e7451f6a2f74",
-            "url": "https://www.dropbox.com/s/jr22xflk5qeddcy/classifier.joblib?dl=1",
+            "url": "https://zenodo.org/record/4361094/files/mof_chemarxiv_classifier.joblib?download=1",
             "path": os.path.join(ASSETS_DIR, "mof_chemarxiv", "classifier.joblib"),
         },
         "features": ["local_property_stats"]
