@@ -2,6 +2,9 @@
 # pylint:disable=missing-module-docstring, missing-function-docstring
 import os
 
+from ase.io import read
+from pymatgen import Structure
+
 from oximachinerunner import OximachineRunner
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -122,3 +125,18 @@ def test_oximachine():
     )
 
     assert output["prediction"] == [3, 3, 3]
+
+    # test independence on reader
+    pymatgen_structure = Structure.from_file(
+        os.path.join(THIS_DIR, "structure_data", "RSM0027.cif")
+    )
+
+    atoms = read(os.path.join(THIS_DIR, "structure_data", "RSM0027.cif"))
+
+    output = runner.run_oximachine(pymatgen_structure)
+
+    assert output["prediction"] == [3, 3]
+
+    output = runner.run_oximachine(atoms)
+
+    assert output["prediction"] == [3, 3]
