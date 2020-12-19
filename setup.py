@@ -61,7 +61,7 @@ setup(
     url=URL,
     install_requires=requirements,
     extras_require=EXTRAS,
-    packages=find_packages(),
+    packages=find_packages(exclude=["*test*"]),
     include_package_data=True,
     license="MIT",
     classifiers=[
