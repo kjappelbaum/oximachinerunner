@@ -21,7 +21,6 @@ def test_oximachine():
     assert output["prediction"] == [2, 2]
     assert output["metal_indices"] == [0, 1]
     assert output["metal_symbols"] == ["Fe", "Fe"]
-    assert output["base_predictions"] == [[2, 1, 2, 2], [2, 1, 2, 2]]
 
     output = runner.run_oximachine(os.path.join(THIS_DIR, "..", "examples/guvzee.cif"))
     assert output["prediction"] == [
