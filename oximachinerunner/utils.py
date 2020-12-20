@@ -84,6 +84,7 @@ def download_model(url: str, destination: Union[Path, str], md5: str):
 
 
 def download_all():
+    """Download model and scaler"""
     for _, v in MODEL_CONFIG.items():
         download_model(v["scaler"]["url"], v["scaler"]["path"], v["scaler"]["md5"])
         download_model(
@@ -92,7 +93,8 @@ def download_all():
 
 
 def read_pickle(filepath: str):
-    """Does what it says. Nothing more and nothing less. Takes a pickle file path and unpickles it"""
+    """Does what it says. Nothing more and nothing less.
+    Takes a pickle file path and unpickles it"""
     with open(filepath, "rb") as fh:  # pylint: disable=invalid-name
         result = pickle.load(fh)  # pylint: disable=invalid-name
     return result
@@ -114,10 +116,8 @@ def diff_to_18e(nvalence):
     return min(np.abs(nvalence - 18), nvalence)
 
 
-class SymbolNameDict:
-    """
-    Parses the periodic table json and returns  a dictionary with symbol: longname
-    """
+class SymbolNameDict:  # pylint: disable=too-few-public-methods
+    """Parses the periodic table json and returns a dictionary with symbol: longname"""
 
     def __init__(self):
         with open(

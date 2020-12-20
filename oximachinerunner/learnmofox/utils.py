@@ -15,13 +15,21 @@ except ImportError:
     from sklearn.ensemble.voting import _fit_single_estimator as _parallel_fit_estimator
 
 
-class VotingClassifier:
+class VotingClassifier:  # pylint:disable=too-many-instance-attributes
     """Custom version of VotingClassifier that uses prefit estimators and that has support for
         - Probability calibration
         - Multiclass as I like it (prediction gives the label and not the index)
     https://gist.github.com/tomquisel/a421235422fdf6b51ec2ccc5e3dee1b4"""
 
-    def __init__(self, estimators, voting="hard", weights=None):
+    def __init__(self, estimators: list, voting: str = "hard", weights: list = None):
+        """
+
+        Args:
+            estimators (list): List of sklearn etimators
+            voting (str, optional): Voting method, can be "soft" or "hard".
+                 Defaults to "hard".
+            weights (list, optional):  Defaults to None.
+        """
         self._estimators = [
             e[1] for e in estimators
         ]  # in self._estimators are the raw, uncalibrated, estimators
@@ -39,7 +47,8 @@ class VotingClassifier:
         self.lb.fit(self.classes)
 
     def fit(self, X, y, sample_weight=None):  # pylint:disable=unused-argument
-        self._fit(X, y, sample_weight=None)
+        """Fits the base estimators"""
+        self._fit(X, y, sample_weight=sample_weight)
         return self
 
     def _fit(self, X, y, sample_weight=None):  # pylint:disable=unused-argument
