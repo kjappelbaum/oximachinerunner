@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.3.0](https://www.github.com/kjappelbaum/oximachinerunner/compare/v1.2.0...v1.3.0) (2020-12-20)
+
+
+### Features
+
+* moved models to zenodo ([#49](https://www.github.com/kjappelbaum/oximachinerunner/issues/49)) ([14a6783](https://www.github.com/kjappelbaum/oximachinerunner/commit/14a67830f942e4446fcfac13f09bb842e1e8d26a))
+
+
+### Miscellaneous
+
+* added tests ([0da09ef](https://www.github.com/kjappelbaum/oximachinerunner/commit/0da09ef27077c2742875862b47c890147027255d))
+* bumping featurizer dependency ([241e466](https://www.github.com/kjappelbaum/oximachinerunner/commit/241e466f0d140e26dfc6b959d35f2f6917418894))
+* bumping featurizer dependency to new patch release ([59aded8](https://www.github.com/kjappelbaum/oximachinerunner/commit/59aded8c677fd8f5d43ecb5bdc9d464793667cd6))
+* drop base prediction test ([4483143](https://www.github.com/kjappelbaum/oximachinerunner/commit/4483143dad2136675fad1e168d373763d12e1d92))
+* excluding test package/dir ([4720b79](https://www.github.com/kjappelbaum/oximachinerunner/commit/4720b7941681babc9cb5642afb1f7fd8bc8d39ff))
+* excluding test package/dir ([9d5ce55](https://www.github.com/kjappelbaum/oximachinerunner/commit/9d5ce55dbe1a338b50cd112c996a9435afb8234e))
+* excluding test package/dir ([a02e623](https://www.github.com/kjappelbaum/oximachinerunner/commit/a02e623d17fd5700b398030dbf64485a23bb7b57))
+
 ## [1.2.0](https://www.github.com/kjappelbaum/oximachinerunner/compare/v1.1.3...v1.2.0) (2020-12-18)
 
 
