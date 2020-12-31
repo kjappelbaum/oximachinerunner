@@ -166,3 +166,11 @@ def test_oximachine():
     assert output["prediction"] == [2, 2, 2, 2, 2, 2]
     assert output["metal_indices"][0] == 0
     assert output["metal_indices"][5] == 5
+
+    output = runner.run_oximachine(
+        os.path.join(THIS_DIR, "..", "oximachinerunner/assets/ACODAA.cif")
+    )
+    assert len(output) == 5
+    assert output["prediction"] == [2, 2]
+    assert output["metal_indices"] == [0, 1]
+    assert output["metal_symbols"] == ["Fe", "Fe"]
