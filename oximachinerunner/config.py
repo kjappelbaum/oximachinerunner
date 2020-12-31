@@ -24,7 +24,11 @@ FEATURES_ALL = (
     + ["crystal_nn_fingerprint", "behler_parinello"]
 )
 
-MODEL_DEFAULT_MAPPING: Dict[str, str] = {"all": "all_20200830", "mof": "mof_chemarxiv"}
+MODEL_DEFAULT_MAPPING: Dict[str, str] = {
+    "all": "all_20200830",
+    "mof": "mof_chemarxiv",
+    "nn": "dense_feedforward_2020",
+}
 MODEL_CONFIG: Dict[str, Dict[str, Any]] = {
     "all_20200830": {
         "scaler": {
@@ -61,5 +65,20 @@ MODEL_CONFIG: Dict[str, Dict[str, Any]] = {
             "dunfilled",
         ]
         + ["crystal_nn_no_steinhardt"],
+    },
+    "dense_feedforward_2020": {
+        "scaler": {
+            "md5": "add941e74371fb4ef9a606bca36da472",
+            "url": "https://www.dropbox.com/s/v5oiwirv984baog/scaler.joblib?dl=1",
+            "path": os.path.join(ASSETS_DIR, "dense_feedforward_2020", "scaler.joblib"),
+        },
+        "classifier": {
+            "md5": "aa056b9b9c17b4e281e1355c81e5951b",
+            "url": "https://www.dropbox.com/s/z2wgtljylioma8q/trained_model_keras.zip?dl=1",
+            "path": os.path.join(
+                ASSETS_DIR, "dense_feedforward_2020", "trained_model_keras.zip"
+            ),
+        },
+        "features": FEATURES_ALL,
     },
 }

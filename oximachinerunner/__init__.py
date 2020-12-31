@@ -4,6 +4,7 @@
 import os
 import sys
 import warnings
+from pathlib import Path
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 from collections import OrderedDict
@@ -31,7 +32,7 @@ THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 def _load_file(
-    path, md5: str, url: str, automatic_download: bool = True
+    path, md5: str, url: str, automatic_download: bool = True, keras_model: bool = False
 ) -> object:  # pylint:disable=inconsistent-return-statements
     """[summary]
 
@@ -41,6 +42,7 @@ def _load_file(
         url (str): url to download the file from
         automatic_download (bool): If true, it automatically downloads
             the file if it is not available
+        keras_model (bool): If true, it assumes that the model is a keras model
 
     Raises:
         FileNotFoundError: If automatic_download is not enabled and the file
@@ -51,7 +53,19 @@ def _load_file(
     """
     if model_exists(path, md5):  # pylint:disable=no-else-return
 
-        model = joblib.load(path)
+        if keras_model:
+            import zipfile  # pylint:disable=import-outside-toplevel
+
+            from tensorflow import keras  # pylint:disable=import-outside-toplevel
+
+            extract_dir = Path(path).parents[0]
+            with zipfile.ZipFile(path, "r") as zip_ref:
+                zip_ref.extractall(extract_dir)
+                extracted = zip_ref.namelist()
+                extracted_file = os.path.join(extract_dir, extracted[0])
+            model = keras.models.load_model(extracted_file)
+        else:
+            model = joblib.load(path)
         return model
     else:
         if not automatic_download:
@@ -62,16 +76,19 @@ def _load_file(
                 to download the files"
             )
         download_model(url, path, md5)
-        return _load_file(path, md5, url, automatic_download)
+        return _load_file(path, md5, url, automatic_download, keras_model)
 
 
-def load_model(modelname: str, automatic_download: bool = True) -> Tuple:
+def load_model(
+    modelname: str, automatic_download: bool = True, keras_model: bool = False
+) -> Tuple:
     """Orchestrates the loading of the model and the scaler
 
     Args:
         modelname (str): name of the model
         automatic_download (bool): if true,
             it will attempt to automatically download the model
+        keras_model (bool): If true, it assumes that the model is a keras model
 
     Raises:
         ValueError: if the modelname is not defined in the configuration
@@ -82,10 +99,11 @@ def load_model(modelname: str, automatic_download: bool = True) -> Tuple:
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         # Check if one default model was selected
-        if modelname == "all":
-            modelname = MODEL_DEFAULT_MAPPING["all"]
-        if modelname == "mof":
-            modelname = MODEL_DEFAULT_MAPPING["mof"]
+
+        try:
+            modelname = MODEL_DEFAULT_MAPPING[modelname]
+        except KeyError:
+            pass
 
         if modelname not in MODEL_CONFIG.keys():
             raise ValueError(
@@ -102,7 +120,9 @@ def load_model(modelname: str, automatic_download: bool = True) -> Tuple:
         scalermd5 = MODEL_CONFIG[modelname]["scaler"]["md5"]
         scalerurl = MODEL_CONFIG[modelname]["scaler"]["url"]
 
-        model = _load_file(modelpath, modelmd5, modelurl, automatic_download)
+        model = _load_file(
+            modelpath, modelmd5, modelurl, automatic_download, keras_model
+        )
         scaler = _load_file(scalerpath, scalermd5, scalerurl, automatic_download)
         featureset = MODEL_CONFIG[modelname]["features"]
 
@@ -125,6 +145,8 @@ class OximachineRunner:
         self._automatic_download = automatic_download
         self.md5 = MODEL_CONFIG[MODEL_DEFAULT_MAPPING[modelname]]["classifier"]["md5"]
         self._model_dict = {}
+        self._is_voting_ensemble = True
+        self._is_nn_model = False
 
     @property
     def model(self):
@@ -149,11 +171,16 @@ class OximachineRunner:
             return self._get(key)
 
     def _load_model(self):
+
+        if "dense" in self.modelname or self.modelname == "nn":
+            self._is_voting_ensemble = False
+            self._is_nn_model = True
+
         (
             self._model_dict["model"],
             self._model_dict["scaler"],
             self._model_dict["featureset"],
-        ) = load_model(self.modelname, self._automatic_download)
+        ) = load_model(self.modelname, self._automatic_download, self._is_nn_model)
 
     def load_model(self):
         """Load the model and populate the namespace with the model objects."""
@@ -195,18 +222,24 @@ class OximachineRunner:
                 base estimator
         """
         feature_matrix_scaled = self.scaler.transform(feature_matrix)
-        prediction = self.model.predict(feature_matrix_scaled)
-
-        max_probas = np.max(self.model.predict_proba(feature_matrix_scaled), axis=1)
-        _base_predictions = self.model._predict(  # pylint:disable=protected-access
-            feature_matrix_scaled
-        )
 
         base_predictions = []
-        for pred in _base_predictions:
-            base_predictions.append(
-                [self.model.classes[prediction_index] for prediction_index in pred]
+        max_probas = []
+
+        if self._is_nn_model:
+            prediction = self.model.predict_classes(feature_matrix_scaled) - 1
+            max_probas = self.model.predict_proba(feature_matrix_scaled)
+        if self._is_voting_ensemble:
+            prediction = self.model.predict(feature_matrix_scaled)
+            max_probas = np.max(self.model.predict_proba(feature_matrix_scaled), axis=1)
+            _base_predictions = self.model._predict(  # pylint:disable=protected-access
+                feature_matrix_scaled
             )
+
+            for pred in _base_predictions:
+                base_predictions.append(
+                    [self.model.classes[prediction_index] for prediction_index in pred]
+                )
         return list(prediction), list(max_probas), list(base_predictions)
 
     def _featurize_single(self, structure: Structure) -> Tuple[np.array, list, list]:

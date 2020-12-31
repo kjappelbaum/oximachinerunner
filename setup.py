@@ -36,6 +36,7 @@ EXTRAS = {
         "sphinx-autodoc-typehints~=1.11.1",
         "sphinx-copybutton~=0.3.1",
     ],
+    "nn": ["tensorflow", "dill"],
 }
 
 here = os.path.abspath(os.path.dirname(__file__))

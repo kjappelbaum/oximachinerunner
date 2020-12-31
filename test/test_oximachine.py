@@ -157,3 +157,12 @@ def test_oximachine():
     )
 
     assert output["prediction"] == [3, 3]
+
+    runner = OximachineRunner(modelname="nn")
+    output = runner.run_oximachine(
+        os.path.join(THIS_DIR, "..", "oximachinerunner/assets/Mg_MOF_74.cif")
+    )
+    assert len(output["prediction"]) == 6
+    assert output["prediction"] == [2, 2, 2, 2, 2, 2]
+    assert output["metal_indices"][0] == 0
+    assert output["metal_indices"][5] == 5
