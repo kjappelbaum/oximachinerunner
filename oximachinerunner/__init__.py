@@ -22,7 +22,7 @@ import oximachinerunner.learnmofox as learnmofox
 
 from ._version import get_versions
 from .config import MODEL_CONFIG, MODEL_DEFAULT_MAPPING
-from .utils import download_model, model_exists
+from .utils import download_model, mode_std_predict_dropout, model_exists
 
 __version__ = get_versions()["version"]
 del get_versions
@@ -207,30 +207,41 @@ class OximachineRunner:
         )
 
     def _make_predictions(  # pylint:disable=invalid-name
-        self, feature_matrix: np.ndarray
-    ) -> Tuple[list, list, list]:
+        self, feature_matrix: np.ndarray, num_samples: int = 100
+    ) -> OrderedDict:
         """Makes predictions for a set of metal sites.
         Applies the scaler to the feature matrix.
 
         Args:
             feature_matrix (np.ndarray): feature matrix (two dimensional,
             metal sites in rows and features in columns)
+            num_samples (int): Number of samples used for Dropout Monte-Carlo
+                uncertainty estimation. Can only be used in Keras models with
+                Dropout layers
 
         Returns:
-            Tuple[list, list, list]: predictions (this is the vote of the four base estimators),
+            OrderedDict: predictions (this is the vote of the four base estimators),
                 maximum probabilities of the base estimators, the prediction of each
-                base estimator
+                base estimator, standard deviation of the base predictions/dropout
+                inference
         """
         feature_matrix_scaled = self.scaler.transform(feature_matrix)
 
         base_predictions = []
         max_probas = []
+        std = []
 
         if self._is_nn_model:
-            prediction = self.model.predict_classes(feature_matrix_scaled) - 1
+
+            model_predictions = mode_std_predict_dropout(
+                feature_matrix_scaled, self.model, num_samples
+            )
+
+            prediction = (model_predictions["prediction"] - 1).tolist()
             max_probas = self.model.predict_proba(feature_matrix_scaled)
+            std = model_predictions["std"]
         if self._is_voting_ensemble:
-            prediction = self.model.predict(feature_matrix_scaled)
+            prediction = self.model.predict(feature_matrix_scaled).tolist()
             max_probas = np.max(self.model.predict_proba(feature_matrix_scaled), axis=1)
             _base_predictions = self.model._predict(  # pylint:disable=protected-access
                 feature_matrix_scaled
@@ -240,7 +251,17 @@ class OximachineRunner:
                 base_predictions.append(
                     [self.model.classes[prediction_index] for prediction_index in pred]
                 )
-        return list(prediction), list(max_probas), list(base_predictions)
+            base_predictions = np.vstack(base_predictions)
+            std = base_predictions.std(0)
+            base_predictions = base_predictions.tolist()
+        return OrderedDict(
+            [
+                ("prediction", prediction),
+                ("max_probas", list(max_probas)),
+                ("base_predictions", base_predictions),
+                ("std", list(std)),
+            ]
+        )
 
     def _featurize_single(self, structure: Structure) -> Tuple[np.array, list, list]:
         """Finds metals in the structure, featurizes the metal sites and collects the features
@@ -255,49 +276,58 @@ class OximachineRunner:
         return feature_matrix, metal_indices, metals
 
     def run_oximachine(
-        self, structure: Union[str, os.PathLike, Structure, Atoms]
+        self,
+        structure: Union[str, os.PathLike, Structure, Atoms],
+        num_samples: int = 10,
     ) -> OrderedDict:
         """Runs oximachine after attempting to guess what structure is
 
         Args:
             structure (Union[str, os.PathLike, Structure, Atoms]):
-            can be a `pymatgen.Structure`, `ase.Atoms` or a filepath as `str` or
-            `os.PathLike`, which we then attempt to parse with pymatgen.
-
+                can be a `pymatgen.Structure`, `ase.Atoms` or a filepath as `str` or
+                `os.PathLike`, which we then attempt to parse with pymatgen.
+            num_samples (int): Number of samples used for Dropout Monte-Carlo
+                uncertainty estimation. Can only be used in Keras models with
+                Dropout layers
         Raises:
             ValueError: In case the format of structure is not implemented
 
         Returns:
             OrderedDict: with the keys metal_indices, metal_symbols,
-                prediction, max_probas, base_predictions
+                prediction, max_probas, base_predictions, std
         """
 
         if isinstance(structure, Structure):  # pylint:disable=no-else-return
-            return self._run_oximachine(structure)
+            return self._run_oximachine(structure, num_samples)
         elif isinstance(structure, Atoms):
             pymatgen_structure = AseAtomsAdaptor.get_structure(structure)
-            return self._run_oximachine(pymatgen_structure)
+            return self._run_oximachine(pymatgen_structure, num_samples)
         elif isinstance(structure, str):
             pymatgen_structure = Structure.from_file(structure)
-            return self._run_oximachine(pymatgen_structure)
+            return self._run_oximachine(pymatgen_structure, num_samples)
         elif isinstance(structure, os.PathLike):
             pymatgen_structure = Structure.from_file(structure)
-            return self._run_oximachine(pymatgen_structure)
+            return self._run_oximachine(pymatgen_structure, num_samples)
         else:
             raise ValueError(
                 "Could not recognize structure! I can read Pymatgen structure objects,\
                 ASE atom objects and a filepath in a fileformat that can be read by ase"
             )
 
-    def _run_oximachine(self, structure: Structure) -> OrderedDict:
+    def _run_oximachine(
+        self, structure: Structure, num_samples: int = 100
+    ) -> OrderedDict:
         """Run the oximachine on one structure
 
         Args:
             structure (Structure): pymatgen Structure object
+            num_samples (int): Number of samples used for Dropout Monte-Carlo
+                uncertainty estimation. Can only be used in Keras models with
+                Dropout layers
 
         Returns:
             OrderedDict: with the keys metal_indices, metal_symbols,
-                prediction, max_probas, base_predictions
+                prediction, max_probas, base_predictions, std
         """
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
@@ -309,20 +339,17 @@ class OximachineRunner:
                 structure
             )
 
-            (
-                prediction,
-                max_probas,
-                base_predictions,
-            ) = self._make_predictions(  # pylint:disable=protected-access
-                feature_matrix
+            result = self._make_predictions(  # pylint:disable=protected-access
+                feature_matrix, num_samples
             )
 
         return OrderedDict(
             [
                 ("metal_indices", metal_indices),
                 ("metal_symbols", metal_symbols),
-                ("prediction", prediction),
-                ("max_probas", max_probas),
-                ("base_predictions", base_predictions),
+                ("prediction", result["prediction"]),
+                ("max_probas", result["max_probas"]),
+                ("base_predictions", result["base_predictions"]),
+                ("std", result["std"]),
             ]
         )
