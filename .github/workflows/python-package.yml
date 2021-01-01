@@ -33,7 +33,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install numpy # on 3.6 it will otherwise install the numpy 1.20rc
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          pip install tensorflow
+          pip install tensorflow dill
       - name: Test with pytest
         run: |
           pip install pytest
