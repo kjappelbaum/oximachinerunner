@@ -69,12 +69,12 @@ MODEL_CONFIG: Dict[str, Dict[str, Any]] = {
     "dense_feedforward_2020": {
         "scaler": {
             "md5": "add941e74371fb4ef9a606bca36da472",
-            "url": "https://www.dropbox.com/s/2uchepaaajjfroc/scaler.joblib?dl=1",
+            "url": "https://www.dropbox.com/s/8mukexg64juo2v2/scaler.joblib?dl=1",
             "path": os.path.join(ASSETS_DIR, "dense_feedforward_2020", "scaler.joblib"),
         },
         "classifier": {
-            "md5": "2484a767c3d4dafd6d6da735ba699d25",
-            "url": "https://www.dropbox.com/s/oauimsva7ep1vj5/trained_model_keras.zip?dl=1",
+            "md5": "6cbc443bb3d9db65c01585ecc08d6d28",
+            "url": "https://www.dropbox.com/s/c09wc1vgb7osyao/trained_model_keras.zip?dl=1",
             "path": os.path.join(
                 ASSETS_DIR, "dense_feedforward_2020", "trained_model_keras.zip"
             ),
