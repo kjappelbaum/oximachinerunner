@@ -9,6 +9,7 @@ import json
 import os
 import pickle
 import urllib
+from collections import OrderedDict
 from collections.abc import Iterable
 from functools import partial
 from pathlib import Path
@@ -16,6 +17,7 @@ from typing import Union
 
 import numpy as np
 from pymatgen.core import Element
+from scipy.stats import mode
 
 from .config import MODEL_CONFIG
 
@@ -141,3 +143,38 @@ class SymbolNameDict:  # pylint: disable=too-few-public-methods
                 self.symbol_name_dict[key] = value["Name"].lower()
 
         return self.symbol_name_dict
+
+
+def predict_dropout(X: np.ndarray, model, num_samples: int) -> np.ndarray:
+    """Dropout Monte Carlo inference
+
+    Args:
+        X (np.ndarray): feature matrix
+        model (tf.keras.model): Keras model with dropout layers
+        num_samples (int): Number of samples drawn from the model
+
+    Returns:
+        np.ndarray: shape (num_samples, rows)
+    """
+    preds = [np.argmax(model(X, training=True), axis=1) for _ in range(num_samples)]
+    return np.stack(preds)
+
+
+def mode_std_predict_dropout(
+    X: np.ndarray, model, num_samples: int = 100
+) -> OrderedDict:
+    """Return mode and standard deviation using dropout monte carlo inference.
+
+    Args:
+        X (np.ndarray): feature matrix
+        model (tf.keras.model): Keras model with dropout layers
+        num_samples (int, optional): Number of samples drawn from the model. Defaults to 100.
+
+    Returns:
+        OrderedDict: Prediction and standard deviation
+    """
+    monte_carlo_prediction = predict_dropout(X, model, num_samples)
+    std = monte_carlo_prediction.std(0)
+    prediction = mode(monte_carlo_prediction, axis=0).mode[0]
+
+    return OrderedDict([("prediction", prediction), ("std", std)])
