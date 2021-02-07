@@ -198,6 +198,9 @@ class OximachineRunner:
             feature_matrix (np.ndarray): feature matrix (two dimensional,
             metal sites in rows and features in columns)
 
+        Raises:
+            PredictionError: For possible exceptions when running the model.
+
         Returns:
             Tuple[list, list, list]: predictions (this is the vote of the four base estimators),
                 maximum probabilities of the base estimators, the prediction of each
@@ -229,6 +232,10 @@ class OximachineRunner:
         Args:
             structure (pymatgen.Structure): Structure to featurize
 
+        Raises:
+            FeaturizationError: Raised for all kinds of errors that might occurr when
+                featurizing the structure
+
         Returns:
             Tuple[np.array, list, list]: Feature array, metal indices, metal symbols
         """
@@ -251,7 +258,11 @@ class OximachineRunner:
             `os.PathLike`, which we then attempt to parse with pymatgen.
 
         Raises:
-            ValueError: In case the format of structure is not implemented
+            ParsingError: In case the format of structure is not implemented or in
+                case we cannot convert the input into a pymatgen Structure object.
+            NoMetalError: In case the structure does not contain a metal.
+            FeaturizationError: In case the featurization fails.
+            PredictionError: In case the prediction fails.
 
         Returns:
             OrderedDict: with the keys metal_indices, metal_symbols,
@@ -287,7 +298,7 @@ class OximachineRunner:
         else:
             raise ParsingError(
                 "Could not recognize structure! I can read Pymatgen structure objects,\
-                ASE atom objects and a filepath in a fileformat that can be read by ase"
+                ASE atom objects and a filepath in a file format that can be read by ase"
             )
 
     def _run_oximachine(self, structure: Structure) -> OrderedDict:
@@ -299,6 +310,9 @@ class OximachineRunner:
         Returns:
             OrderedDict: with the keys metal_indices, metal_symbols,
                 prediction, max_probas, base_predictions
+
+        Raises:
+            NoMetalError: In case the structure does not contain a metal
         """
         if not has_metal_sites(structure):
             raise NoMetalError(

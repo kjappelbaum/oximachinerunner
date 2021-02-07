@@ -168,6 +168,7 @@ def test_oximachine():
 
 
 def test_exception():
+    """Check that we catch the errors in the way it is explained in the docs"""
     co2 = molecule("CO2")
     runner = OximachineRunner()
     with pytest.raises(ParsingError):
@@ -188,7 +189,9 @@ def test_exception():
             write(temp.name, co2)
             runner.run_oximachine(temp.name)
 
-    with pytest.raises(ParsingError):
+    with pytest.raises(ParsingError or NoMetalError):
+        # What happens depends on the pymatgen/ase versions.
+        # Some versions seem to not be able to parse the CIF
         with NamedTemporaryFile(suffix=".cif") as temp:
             write(temp.name, co2)
             runner.run_oximachine(temp.name)
