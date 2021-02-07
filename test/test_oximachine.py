@@ -1,12 +1,20 @@
 # -*- coding: utf-8 -*-
 # pylint:disable=missing-module-docstring, missing-function-docstring
 import os
+from tempfile import NamedTemporaryFile
 
-from ase.io import read
+import pytest
+from ase.build import molecule
+from ase.io import read, write
 from pymatgen import Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 from oximachinerunner import OximachineRunner
+from oximachinerunner.errors import (
+    NoMetalError,
+    OximachineRunnerException,
+    ParsingError,
+)
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -157,3 +165,30 @@ def test_oximachine():
     )
 
     assert output["prediction"] == [3, 3]
+
+
+def test_exception():
+    co2 = molecule("CO2")
+    runner = OximachineRunner()
+    with pytest.raises(ParsingError):
+        runner.run_oximachine(co2)
+
+    with pytest.raises(OximachineRunnerException):
+        runner.run_oximachine(co2)
+
+    co2.set_cell([10, 10, 10])
+    with pytest.raises(NoMetalError):
+        runner.run_oximachine(co2)
+
+    with pytest.raises(OximachineRunnerException):
+        runner.run_oximachine(co2)
+
+    with pytest.raises(OximachineRunnerException):
+        with NamedTemporaryFile(suffix=".cif") as temp:
+            write(temp.name, co2)
+            runner.run_oximachine(temp.name)
+
+    with pytest.raises(ParsingError):
+        with NamedTemporaryFile(suffix=".cif") as temp:
+            write(temp.name, co2)
+            runner.run_oximachine(temp.name)

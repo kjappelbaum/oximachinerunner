@@ -10,3 +10,9 @@ Oximachinerunner API reference
     :members:
     :show-inheritance:
     :special-members:
+
+
+.. automodule:: oximachinerunner.errors
+    :members:
+    :show-inheritance:
+    :special-members:

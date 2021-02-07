@@ -141,3 +141,13 @@ class SymbolNameDict:  # pylint: disable=too-few-public-methods
                 self.symbol_name_dict[key] = value["Name"].lower()
 
         return self.symbol_name_dict
+
+
+def has_metal_sites(structure):
+    """Returns True if there is a metal in the structure."""
+    metal_sites = []
+    for _, site in enumerate(structure):
+        if site.species.elements[0].is_metal:
+            metal_sites.append(site)
+
+    return len(metal_sites) > 0
