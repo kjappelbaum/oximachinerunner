@@ -19,7 +19,7 @@ class NoMetalError(OximachineRunnerException):
 
 
 class FeaturizationError(OximachineRunnerException):
-    """Error that is thrown if the feautization fails"""
+    """Error that is thrown if the featurization fails"""
 
 
 class PredictionError(OximachineRunnerException):
