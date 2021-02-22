@@ -61,7 +61,7 @@ Exceptions
 - *Featurization error*: In some cases the featurization might fail. Then, we will raise a :py:class:`~oximachinerunner.errors.FeaturizationError` exception.
 - *Prediction error*: In some cases the prediction might fail. Then, we will rasie a :py:class:`~oximachinerunner.errors.PredictionError` execption.
 
-All errors are subclasses of :py:class:`~oximachinerunner.errors.OximachineRunnerException`. Hence, in principle, you can just catch with exception class to catch all aforementioned error types.
+All errors are subclasses of :py:class:`~oximachinerunner.errors.OximachineRunnerException`, which you can catch in order to handle all of the aforementioned error types in one go if desired.
 
 
 Graphical user interface
