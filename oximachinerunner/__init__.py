@@ -21,13 +21,7 @@ import oximachinerunner.learnmofox as learnmofox
 
 from ._version import get_versions
 from .config import MODEL_CONFIG, MODEL_DEFAULT_MAPPING
-from .errors import (
-    FeaturizationError,
-    ModelNotFoundError,
-    NoMetalError,
-    ParsingError,
-    PredictionError,
-)
+from .errors import FeaturizationError, ParsingError, PredictionError
 from .utils import download_model, has_metal_sites, model_exists
 
 __version__ = get_versions()["version"]
@@ -37,6 +31,17 @@ sys.modules["learnmofox"] = learnmofox
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 
 __all__ = ["OximachineRunner"]
+
+
+EMPTY_PREDICTION = OrderedDict(
+    [
+        ("metal_indices", []),
+        ("metal_symbols", []),
+        ("prediction", []),
+        ("max_probas", []),
+        ("base_predictions", []),
+    ]
+)
 
 
 def _load_file(
@@ -260,7 +265,6 @@ class OximachineRunner:
         Raises:
             ParsingError: In case the format of structure is not implemented or in
                 case we cannot convert the input into a pymatgen Structure object.
-            NoMetalError: In case the structure does not contain a metal.
             FeaturizationError: In case the featurization fails.
             PredictionError: In case the prediction fails.
 
@@ -310,15 +314,14 @@ class OximachineRunner:
         Returns:
             OrderedDict: with the keys metal_indices, metal_symbols,
                 prediction, max_probas, base_predictions
-
-        Raises:
-            NoMetalError: In case the structure does not contain a metal
         """
         if not has_metal_sites(structure):
-            raise NoMetalError(
+            warnings.warn(
                 "Oximachine can only predict oxidation states of metals. \
                     This structure contains no metals."
             )
+            return EMPTY_PREDICTION
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             (

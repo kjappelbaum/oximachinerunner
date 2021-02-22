@@ -9,12 +9,8 @@ from ase.io import read, write
 from pymatgen import Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
-from oximachinerunner import OximachineRunner
-from oximachinerunner.errors import (
-    NoMetalError,
-    OximachineRunnerException,
-    ParsingError,
-)
+from oximachinerunner import EMPTY_PREDICTION, OximachineRunner
+from oximachinerunner.errors import OximachineRunnerException, ParsingError
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -178,11 +174,8 @@ def test_exception():
         runner.run_oximachine(co2)
 
     co2.set_cell([10, 10, 10])
-    with pytest.raises(NoMetalError):
-        runner.run_oximachine(co2)
 
-    with pytest.raises(OximachineRunnerException):
-        runner.run_oximachine(co2)
+    assert runner.run_oximachine(co2) == EMPTY_PREDICTION
 
     with pytest.raises(OximachineRunnerException):
         with NamedTemporaryFile(suffix=".cif") as temp:
