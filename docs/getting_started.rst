@@ -58,7 +58,7 @@ Exceptions
 
 - *No metal in structure*: `OximachineRunner` can only be used to predict oxidation states of metals. If a input structure does not contain a metal, we will raise a :py:class:`~oximachinerunner.errors.NoMetalError` execption.
 - *Parsing error*: Internally, we will convert all inputs into a pymatgen structure object. This only works if pymatgen can parse the structure. Note that a pymatgen Structure is a periodic object, hence we need some information about the cell. Also, there might be issues in case the `CIF` is formatted in a way pymatgen cannot handle (e.g., using `_atom_site_Cartn_x` instead of `_atom_site_fract_x`). In all these cases, we will raise a :py:class:`~oximachinerunner.errors.ParsingError` execption.
-- *Featurization error*: In some cases the featurization might fail. Then, we will rasie a :py:class:`~oximachinerunner.errors.FeaturizationError` execption.
+- *Featurization error*: In some cases the featurization might fail. Then, we will raise a :py:class:`~oximachinerunner.errors.FeaturizationError` exception.
 - *Prediction error*: In some cases the prediction might fail. Then, we will rasie a :py:class:`~oximachinerunner.errors.PredictionError` execption.
 
 All errors are subclasses of :py:class:`~oximachinerunner.errors.OximachineRunnerException`. Hence, in principle, you can just catch with exception class to catch all aforementioned error types.
