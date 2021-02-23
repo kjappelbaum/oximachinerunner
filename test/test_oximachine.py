@@ -2,11 +2,14 @@
 # pylint:disable=missing-module-docstring, missing-function-docstring
 import os
 
+import pytest
+from ase.build import molecule
 from ase.io import read
 from pymatgen import Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
-from oximachinerunner import OximachineRunner
+from oximachinerunner import EMPTY_PREDICTION, OximachineRunner
+from oximachinerunner.errors import OximachineRunnerException, ParsingError
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -157,3 +160,18 @@ def test_oximachine():
     )
 
     assert output["prediction"] == [3, 3]
+
+
+def test_exception():
+    """Check that we catch the errors in the way it is explained in the docs"""
+    co2 = molecule("CO2")
+    runner = OximachineRunner()
+    with pytest.raises(ParsingError):
+        runner.run_oximachine(co2)
+
+    with pytest.raises(OximachineRunnerException):
+        runner.run_oximachine(co2)
+
+    co2.set_cell([10, 10, 10])
+
+    assert runner.run_oximachine(co2) == EMPTY_PREDICTION

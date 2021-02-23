@@ -21,13 +21,27 @@ import oximachinerunner.learnmofox as learnmofox
 
 from ._version import get_versions
 from .config import MODEL_CONFIG, MODEL_DEFAULT_MAPPING
-from .utils import download_model, model_exists
+from .errors import FeaturizationError, ParsingError, PredictionError
+from .utils import download_model, has_metal_sites, model_exists
 
 __version__ = get_versions()["version"]
 del get_versions
 sys.modules["learnmofox"] = learnmofox
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
+
+__all__ = ["OximachineRunner"]
+
+
+EMPTY_PREDICTION = OrderedDict(
+    [
+        ("metal_indices", []),
+        ("metal_symbols", []),
+        ("prediction", []),
+        ("max_probas", []),
+        ("base_predictions", []),
+    ]
+)
 
 
 def _load_file(
@@ -189,25 +203,33 @@ class OximachineRunner:
             feature_matrix (np.ndarray): feature matrix (two dimensional,
             metal sites in rows and features in columns)
 
+        Raises:
+            PredictionError: For possible exceptions when running the model.
+
         Returns:
             Tuple[list, list, list]: predictions (this is the vote of the four base estimators),
                 maximum probabilities of the base estimators, the prediction of each
                 base estimator
         """
-        feature_matrix_scaled = self.scaler.transform(feature_matrix)
-        prediction = self.model.predict(feature_matrix_scaled)
+        try:
+            feature_matrix_scaled = self.scaler.transform(feature_matrix)
+            prediction = self.model.predict(feature_matrix_scaled)
 
-        max_probas = np.max(self.model.predict_proba(feature_matrix_scaled), axis=1)
-        _base_predictions = self.model._predict(  # pylint:disable=protected-access
-            feature_matrix_scaled
-        )
-
-        base_predictions = []
-        for pred in _base_predictions:
-            base_predictions.append(
-                [self.model.classes[prediction_index] for prediction_index in pred]
+            max_probas = np.max(self.model.predict_proba(feature_matrix_scaled), axis=1)
+            _base_predictions = self.model._predict(  # pylint:disable=protected-access
+                feature_matrix_scaled
             )
-        return list(prediction), list(max_probas), list(base_predictions)
+
+            base_predictions = []
+            for pred in _base_predictions:
+                base_predictions.append(
+                    [self.model.classes[prediction_index] for prediction_index in pred]
+                )
+            return list(prediction), list(max_probas), list(base_predictions)
+        except Exception as exception:
+            raise PredictionError(
+                "Could not make predictions for structure."
+            ) from exception
 
     def _featurize_single(self, structure: Structure) -> Tuple[np.array, list, list]:
         """Finds metals in the structure, featurizes the metal sites and collects the features
@@ -215,11 +237,20 @@ class OximachineRunner:
         Args:
             structure (pymatgen.Structure): Structure to featurize
 
+        Raises:
+            FeaturizationError: Raised for all kinds of errors that might occurr when
+                featurizing the structure
+
         Returns:
             Tuple[np.array, list, list]: Feature array, metal indices, metal symbols
         """
-        feature_matrix, metal_indices, metals = featurize(structure, self.featureset)
-        return feature_matrix, metal_indices, metals
+        try:
+            feature_matrix, metal_indices, metals = featurize(
+                structure, self.featureset
+            )
+            return feature_matrix, metal_indices, metals
+        except Exception as exception:
+            raise FeaturizationError("Could not featurize structure.") from exception
 
     def run_oximachine(
         self, structure: Union[str, os.PathLike, Structure, Atoms]
@@ -232,7 +263,10 @@ class OximachineRunner:
             `os.PathLike`, which we then attempt to parse with pymatgen.
 
         Raises:
-            ValueError: In case the format of structure is not implemented
+            ParsingError: In case the format of structure is not implemented or in
+                case we cannot convert the input into a pymatgen Structure object.
+            FeaturizationError: In case the featurization fails.
+            PredictionError: In case the prediction fails.
 
         Returns:
             OrderedDict: with the keys metal_indices, metal_symbols,
@@ -242,18 +276,33 @@ class OximachineRunner:
         if isinstance(structure, Structure):  # pylint:disable=no-else-return
             return self._run_oximachine(structure)
         elif isinstance(structure, Atoms):
-            pymatgen_structure = AseAtomsAdaptor.get_structure(structure)
+            try:
+                pymatgen_structure = AseAtomsAdaptor.get_structure(structure)
+            except Exception as exception:
+                raise ParsingError(
+                    "Could not convert structure into a pymatgen Structure object."
+                ) from exception
             return self._run_oximachine(pymatgen_structure)
         elif isinstance(structure, str):
-            pymatgen_structure = Structure.from_file(structure)
+            try:
+                pymatgen_structure = Structure.from_file(structure)
+            except Exception as exception:
+                raise ParsingError(
+                    "Could not convert structure into a pymatgen Structure object."
+                ) from exception
             return self._run_oximachine(pymatgen_structure)
         elif isinstance(structure, os.PathLike):
-            pymatgen_structure = Structure.from_file(structure)
+            try:
+                pymatgen_structure = Structure.from_file(structure)
+            except Exception as exception:
+                raise ParsingError(
+                    "Could not convert structure into a pymatgen Structure object."
+                ) from exception
             return self._run_oximachine(pymatgen_structure)
         else:
-            raise ValueError(
+            raise ParsingError(
                 "Could not recognize structure! I can read Pymatgen structure objects,\
-                ASE atom objects and a filepath in a fileformat that can be read by ase"
+                ASE atom objects and a filepath in a file format that can be read by ase"
             )
 
     def _run_oximachine(self, structure: Structure) -> OrderedDict:
@@ -266,6 +315,13 @@ class OximachineRunner:
             OrderedDict: with the keys metal_indices, metal_symbols,
                 prediction, max_probas, base_predictions
         """
+        if not has_metal_sites(structure):
+            warnings.warn(
+                "Oximachine can only predict oxidation states of metals. \
+                    This structure contains no metals."
+            )
+            return EMPTY_PREDICTION
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             (
