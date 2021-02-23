@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 # pylint:disable=missing-module-docstring, missing-function-docstring
 import os
-from tempfile import NamedTemporaryFile
 
 import pytest
 from ase.build import molecule
-from ase.io import read, write
+from ase.io import read
 from pymatgen import Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
@@ -176,8 +175,3 @@ def test_exception():
     co2.set_cell([10, 10, 10])
 
     assert runner.run_oximachine(co2) == EMPTY_PREDICTION
-
-    with pytest.raises(OximachineRunnerException):
-        with NamedTemporaryFile(suffix=".cif") as temp:
-            write(temp.name, co2)
-            runner.run_oximachine(temp.name)
