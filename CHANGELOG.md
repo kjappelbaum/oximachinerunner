@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.0](https://www.github.com/kjappelbaum/oximachinerunner/compare/v1.3.0...v1.4.0) (2021-02-23)
+
+
+### Features
+
+* custom exceptions ([#59](https://www.github.com/kjappelbaum/oximachinerunner/issues/59)) ([662c702](https://www.github.com/kjappelbaum/oximachinerunner/commit/662c702126706910957c31b730d22349f194a3c0))
+
+
+### Miscellaneous
+
+* **deps:** update xgboost requirement from ~=1.3.0 to ~=1.3.3 ([#56](https://www.github.com/kjappelbaum/oximachinerunner/issues/56)) ([3722b08](https://www.github.com/kjappelbaum/oximachinerunner/commit/3722b08d49ff152e8c401bc8a866150328999bcd))
+
 ## [1.3.0](https://www.github.com/kjappelbaum/oximachinerunner/compare/v1.2.0...v1.3.0) (2020-12-20)
 
 
