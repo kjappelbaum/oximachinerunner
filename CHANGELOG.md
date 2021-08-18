@@ -1,5 +1,17 @@
 # Changelog
 
+### [1.4.1](https://www.github.com/kjappelbaum/oximachinerunner/compare/v1.4.0...v1.4.1) (2021-08-18)
+
+
+### Bug Fixes
+
+* pin pymatgen version, close [#64](https://www.github.com/kjappelbaum/oximachinerunner/issues/64) ([6f26320](https://www.github.com/kjappelbaum/oximachinerunner/commit/6f263201c9abfd79a893fd438e8e394422c5bd2d))
+
+
+### Miscellaneous
+
+* **deps:** update xgboost requirement from ~=1.3.3 to ~=1.4.2 ([#63](https://www.github.com/kjappelbaum/oximachinerunner/issues/63)) ([d3edf20](https://www.github.com/kjappelbaum/oximachinerunner/commit/d3edf2095188a98c907940c1f7a63e83b7ab6b7f))
+
 ## [1.4.0](https://www.github.com/kjappelbaum/oximachinerunner/compare/v1.3.0...v1.4.0) (2021-02-23)
 
 
