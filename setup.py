@@ -14,7 +14,7 @@ DESCRIPTION = "Run the oximachine"
 URL = "https://github.com/kjappelbaum/oximachinerunner"
 EMAIL = "kevin.jablonka@epfl.ch"
 AUTHOR = "Kevin M. Jablonka, Daniele Ongari, Mohamad Moosavi, Berend Smit"
-REQUIRES_PYTHON = ">=3.7,<3.9"
+REQUIRES_PYTHON = ">=3.7,<3.11"
 
 # What packages are required for this module to be executed?
 with open("requirements.txt", "r") as fh:

@@ -14,7 +14,7 @@ import numpy as np
 from ase import Atoms
 from oximachine_featurizer import featurize
 from oximachine_featurizer.featurize import get_feature_names
-from pymatgen import Structure
+from pymatgen.core import Structure
 from pymatgen.io.ase import AseAtomsAdaptor
 
 import oximachinerunner.learnmofox as learnmofox

@@ -5,7 +5,7 @@ import os
 import pytest
 from ase.build import molecule
 from ase.io import read
-from pymatgen import Structure
+from pymatgen.core import Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 from oximachinerunner import EMPTY_PREDICTION, OximachineRunner
