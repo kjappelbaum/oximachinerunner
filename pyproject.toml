@@ -1,0 +1,61 @@
+[build-system]
+requires = ['flit_core >=3.4,<4']
+build-backend = 'flit_core.buildapi'
+
+[project]
+name = "oximachinerunner"
+dynamic = ['version']
+description = "Run the oximachine"
+authors = [
+    { name = 'Kevin M. Jablonka' },
+]
+readme = 'README.md'
+license = {file = 'LICENSE'}
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+]
+requires-python = '>=3.8'
+dependencies = [
+    'oximachine_featurizer @ git+https://github.com/mpougin/oximachine_featurizer.git@update-packaging',
+    'xgboost~=1.4',
+]
+
+[project.urls]
+Homepage = "https://github.com/kjappelbaum/oximachine_featurizer"
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit~=2.6.0",
+    "pylint~=2.5.3",
+    "pytest~=7.4",
+    "isort~=4.3.21",
+    "black",
+]
+docs = [
+    "sphinx~=3.3.1",
+    "sphinx-book-theme~=0.0.39",
+    "sphinx-autodoc-typehints~=1.11.1",
+    "sphinx-copybutton~=0.3.1",
+]
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist =
+    py{38, 39, 310, 311}
+
+[testenv]
+description = Run the pytest tests
+deps = pytest
+commands = pytest {posargs}
+"""
