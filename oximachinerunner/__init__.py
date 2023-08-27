@@ -17,15 +17,14 @@ from oximachine_featurizer.featurize import get_feature_names
 from pymatgen.core import Structure
 from pymatgen.io.ase import AseAtomsAdaptor
 
-import oximachinerunner.learnmofox as learnmofox
+from . import learnmofox
 
-from ._version import get_versions
 from .config import MODEL_CONFIG, MODEL_DEFAULT_MAPPING
 from .errors import FeaturizationError, ParsingError, PredictionError
 from .utils import download_model, has_metal_sites, model_exists
 
-__version__ = get_versions()["version"]
-del get_versions
+__version__ = '1.4.0'
+
 sys.modules["learnmofox"] = learnmofox
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
