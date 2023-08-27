@@ -17,7 +17,6 @@ import sys
 sys.path.insert(0, os.path.abspath(".."))
 from oximachinerunner import __version__
 
-
 # -- Project information -----------------------------------------------------
 
 project = "oximachinerunner"

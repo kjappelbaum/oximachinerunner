@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# pylint:disable=wrong-import-position
 """Implements methods to use oximachine as part of a Python package"""
 import os
 import sys
@@ -18,7 +17,6 @@ from pymatgen.core import Structure
 from pymatgen.io.ase import AseAtomsAdaptor
 
 from . import learnmofox
-
 from .config import MODEL_CONFIG, MODEL_DEFAULT_MAPPING
 from .errors import FeaturizationError, ParsingError, PredictionError
 from .utils import download_model, has_metal_sites, model_exists

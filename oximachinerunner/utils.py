@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=invalid-name
 """
 Some general utility functions for the oxidation state mining project
 """
@@ -8,13 +7,13 @@ import hashlib
 import json
 import os
 import pickle
-import urllib
 from collections.abc import Iterable
 from functools import partial
 from pathlib import Path
 from typing import Union
 
 import numpy as np
+import requests
 from pymatgen.core import Element
 
 from .config import MODEL_CONFIG
@@ -41,16 +40,6 @@ def model_exists(path: Union[Path, str], md5: str):
     return is_exist
 
 
-def cbk_for_urlretrieve(a, b, c):
-    """
-    Callback function for showing process
-    """
-    per = 100.0 * a * b / c
-    if per > 100:
-        per = 100
-    print("\r%.1f%% of %.2fM" % (per, c / (1024 * 1024)), end="")
-
-
 def download_model(url: str, destination: Union[Path, str], md5: str):
     """Downloads file from url to destination
         and checks md5 hash
@@ -72,7 +61,10 @@ def download_model(url: str, destination: Union[Path, str], md5: str):
             basedir = Path(destination).parent
             if not os.path.exists(basedir):
                 os.makedirs(basedir)
-            urllib.request.urlretrieve(url, destination, cbk_for_urlretrieve)
+
+            r = requests.get(url)
+            with open(destination, "wb") as f:
+                f.write(r.content)
             this_file_md5 = md5sum(destination)
             if this_file_md5 == md5:
                 print("\nDownload {} file successfully.".format(destination))
