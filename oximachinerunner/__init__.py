@@ -23,7 +23,8 @@ from .config import MODEL_CONFIG, MODEL_DEFAULT_MAPPING
 from .errors import FeaturizationError, ParsingError, PredictionError
 from .utils import download_model, has_metal_sites, model_exists
 
-__version__ = '1.4.0'
+VERSION = "1.5.0-dev"
+__version__ = VERSION
 
 sys.modules["learnmofox"] = learnmofox
 
@@ -63,7 +64,6 @@ def _load_file(
         model, typically a sklearn estimator object
     """
     if model_exists(path, md5):  # pylint:disable=no-else-return
-
         model = joblib.load(path)
         return model
     else:
