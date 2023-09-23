@@ -46,15 +46,3 @@ docs = [
     "sphinx-autodoc-typehints~=1.11.1",
     "sphinx-copybutton~=0.3.1",
 ]
-
-[tool.tox]
-legacy_tox_ini = """
-[tox]
-envlist =
-    py{38, 39, 310, 311}
-
-[testenv]
-description = Run the pytest tests
-deps = pytest
-commands = pytest {posargs}
-"""
