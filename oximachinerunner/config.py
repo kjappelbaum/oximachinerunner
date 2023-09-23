@@ -19,9 +19,7 @@ GEOMETRY_FEATURES = ["crystal_nn_fingerprint", "behler_parinello"]
 CHEMISTRY_FEATURES = ["local_property_stats"]
 
 FEATURES_ALL = (
-    CHEMISTRY_FEATURES
-    + METAL_CENTER_FEATURES
-    + ["crystal_nn_fingerprint", "behler_parinello"]
+    CHEMISTRY_FEATURES + METAL_CENTER_FEATURES + ["crystal_nn_fingerprint", "behler_parinello"]
 )
 
 MODEL_DEFAULT_MAPPING: Dict[str, str] = {"all": "all_20200830", "mof": "mof_chemarxiv"}

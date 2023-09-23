@@ -52,9 +52,7 @@ def test_oximachine():
         3,
     ]
 
-    output = runner.run_oximachine(
-        os.path.join(THIS_DIR, "..", "examples/GUVZII_clean.cif")
-    )
+    output = runner.run_oximachine(os.path.join(THIS_DIR, "..", "examples/GUVZII_clean.cif"))
     assert output["prediction"] == [
         2,
         2,
@@ -76,26 +74,18 @@ def test_oximachine():
         2,
     ]
 
-    output = runner.run_oximachine(
-        os.path.join(THIS_DIR, "..", "examples/IDIWOH_clean.cif")
-    )
+    output = runner.run_oximachine(os.path.join(THIS_DIR, "..", "examples/IDIWOH_clean.cif"))
     assert output["prediction"] == [4, 4, 4, 4]
 
-    output = runner.run_oximachine(
-        os.path.join(THIS_DIR, "..", "examples/IDIWIB_clean.cif")
-    )
+    output = runner.run_oximachine(os.path.join(THIS_DIR, "..", "examples/IDIWIB_clean.cif"))
     assert output["prediction"] == [3, 3, 3, 3]
 
     # testing the MOF model
     runner = OximachineRunner(modelname="mof")
-    output = runner.run_oximachine(
-        os.path.join(THIS_DIR, "..", "examples/IDIWIB_clean.cif")
-    )
+    output = runner.run_oximachine(os.path.join(THIS_DIR, "..", "examples/IDIWIB_clean.cif"))
     assert output["prediction"] == [3, 3, 3, 3]
 
-    output = runner.run_oximachine(
-        os.path.join(THIS_DIR, "..", "examples/IDIWOH_clean.cif")
-    )
+    output = runner.run_oximachine(os.path.join(THIS_DIR, "..", "examples/IDIWOH_clean.cif"))
     assert output["prediction"] == [4, 4, 4, 4]
 
     output = runner.run_oximachine(
@@ -118,15 +108,11 @@ def test_oximachine():
     assert output["metal_indices"][5] == 5
 
     runner = OximachineRunner()
-    output = runner.run_oximachine(
-        os.path.join(THIS_DIR, "structure_data", "RSM0027.cif")
-    )
+    output = runner.run_oximachine(os.path.join(THIS_DIR, "structure_data", "RSM0027.cif"))
 
     assert output["prediction"] == [3, 3]
 
-    output = runner.run_oximachine(
-        os.path.join(THIS_DIR, "structure_data", "RSM0099.cif")
-    )
+    output = runner.run_oximachine(os.path.join(THIS_DIR, "structure_data", "RSM0099.cif"))
 
     assert output["prediction"] == [3, 3, 3]
 
@@ -149,15 +135,11 @@ def test_oximachine():
 
     space_group_analyzer = SpacegroupAnalyzer(pymatgen_structure)
 
-    output = runner.run_oximachine(
-        space_group_analyzer.get_conventional_standard_structure()
-    )
+    output = runner.run_oximachine(space_group_analyzer.get_conventional_standard_structure())
 
     assert output["prediction"] == [3, 3, 3, 3]
 
-    output = runner.run_oximachine(
-        space_group_analyzer.get_primitive_standard_structure()
-    )
+    output = runner.run_oximachine(space_group_analyzer.get_primitive_standard_structure())
 
     assert output["prediction"] == [3, 3]
 
