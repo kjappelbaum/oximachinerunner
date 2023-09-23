@@ -1,70 +1,23 @@
+# # Install pre-commit hooks via
+# pre-commit install
+
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.2.3
-    hooks:
-      - id: trailing-whitespace
-      - id: check-yaml
-        name: Check Yaml
-        description: This hook checks yaml files for parseable syntax.
-        entry: check-yaml
-        language: python
-        types: [yaml]
-      - id: detect-private-key
-        name: Detect Private Key
-        description: Detects the presence of private keys
-        entry: detect-private-key
-        language: python
-        types: [text]
-      - id: end-of-file-fixer
-        name: Fix End of Files
-        description: Ensures that a file is either empty, or ends with one newline.
-        entry: end-of-file-fixer
-        language: python
-        types: [text]
-      - id: fix-encoding-pragma
-        name: Fix python encoding pragma
-        language: python
-        entry: fix-encoding-pragma
-        description: "Add # -*- coding: utf-8 -*- to the top of python files"
-        types: [python]
-      - id: mixed-line-ending
-        name: Mixed line ending
-        description: Replaces or checks mixed line ending
-        entry: mixed-line-ending
-        language: python
-        types: [text]
-
-  # - repo: https://github.com/pre-commit/mirrors-mypy
-  #   rev: "" # Use the sha / tag you want to point at
-  #   hooks:
-  #     - id: mypy
-  #       exclude: (versioneer.py|oximachinerunner/_version.py|^docs/)
-
-  - repo: https://github.com/psf/black
-    rev: 20.8b1
-    hooks:
-      - id: black
-        language_version: python3
-        name: black
-        exclude: versioneer.py|oximachinerunner/_version.py|^docs/
-        entry: black
-        types: [python]
-
-  - repo: https://github.com/pre-commit/mirrors-isort
-    rev: "v5.6.4" # Use the revision sha / tag you want to point at
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
     hooks:
       - id: isort
-        name: isort
-        language: system
-        exclude: versioneer.py|oximachinerunner/_version.py|^docs/
-        types: [python]
-        entry: isort
 
-  - repo: local
+  - repo: https://github.com/psf/black
+    rev: 23.7.0
     hooks:
-      - id: pylint
-        language: system
-        types: [file, python]
-        exclude: versioneer.py|oximachinerunner/_version.py|^docs
-        name: pylint
-        entry: pylint
+      - id: black
+        # It is recommended to specify the latest version of Python
+        # supported by your project here, or alternatively use
+        # pre-commit's default_language_version, see
+        # https://pre-commit.com/#top_level-default_language_version
+        language_version: python3.10
+
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: 'v0.0.262'
+    hooks:
+      - id: ruff

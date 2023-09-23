@@ -13,18 +13,16 @@
 #
 import os
 import sys
+
 sys.path.insert(0, os.path.abspath(".."))
-from oximachinerunner import __version__
-
-
 
 # -- Project information -----------------------------------------------------
 
-project = 'oximachinerunner'
-copyright = '2020, Kevin Maik Jablonka, Daniele Ongari, Mohamad Moosavi, Berend Smit'
-author = 'Kevin Maik Jablonka, Daniele Ongari, Mohamad Moosavi, Berend Smit'
+project = "oximachinerunner"
+copyright = "2020, Kevin Maik Jablonka, Daniele Ongari, Mohamad Moosavi, Berend Smit"
+author = "Kevin Maik Jablonka, Daniele Ongari, Mohamad Moosavi, Berend Smit"
 
-release = __version__
+release = "1.5.0-dev"
 
 # -- General configuration ---------------------------------------------------
 
@@ -50,12 +48,12 @@ copybutton_prompt_is_regexp = True
 autosummary_generate = True
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -72,7 +70,7 @@ html_theme_options = {
     "repository_url": "https://github.com/kjappelbaum/oximachinerunner",
     "use_repository_button": True,
     "use_edit_page_button": True,
-    "use_issues_button": True
+    "use_issues_button": True,
 }
 
 html_show_sphinx = False
@@ -84,4 +82,4 @@ html_use_smartypants = True
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]

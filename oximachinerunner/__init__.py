@@ -4,8 +4,6 @@
 import os
 import sys
 import warnings
-
-warnings.filterwarnings("ignore", category=DeprecationWarning)
 from collections import OrderedDict
 from typing import Dict, List, Tuple, Union
 
@@ -14,18 +12,19 @@ import numpy as np
 from ase import Atoms
 from oximachine_featurizer import featurize
 from oximachine_featurizer.featurize import get_feature_names
-from pymatgen import Structure
+from pymatgen.core import Structure
 from pymatgen.io.ase import AseAtomsAdaptor
 
-import oximachinerunner.learnmofox as learnmofox
-
-from ._version import get_versions
+from . import learnmofox
 from .config import MODEL_CONFIG, MODEL_DEFAULT_MAPPING
 from .errors import FeaturizationError, ParsingError, PredictionError
 from .utils import download_model, has_metal_sites, model_exists
 
-__version__ = get_versions()["version"]
-del get_versions
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
+VERSION = "1.5.0-dev"
+__version__ = VERSION
+
 sys.modules["learnmofox"] = learnmofox
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -64,7 +63,6 @@ def _load_file(
         model, typically a sklearn estimator object
     """
     if model_exists(path, md5):  # pylint:disable=no-else-return
-
         model = joblib.load(path)
         return model
     else:
@@ -103,9 +101,7 @@ def load_model(modelname: str, automatic_download: bool = True) -> Tuple:
 
         if modelname not in MODEL_CONFIG.keys():
             raise ValueError(
-                "A model with name {} does not exist in the configuration.".format(
-                    modelname
-                )
+                "A model with name {} does not exist in the configuration.".format(modelname)
             )
 
         modelpath = MODEL_CONFIG[modelname]["classifier"]["path"]
@@ -227,9 +223,7 @@ class OximachineRunner:
                 )
             return list(prediction), list(max_probas), list(base_predictions)
         except Exception as exception:
-            raise PredictionError(
-                "Could not make predictions for structure."
-            ) from exception
+            raise PredictionError("Could not make predictions for structure.") from exception
 
     def _featurize_single(self, structure: Structure) -> Tuple[np.array, list, list]:
         """Finds metals in the structure, featurizes the metal sites and collects the features
@@ -245,16 +239,12 @@ class OximachineRunner:
             Tuple[np.array, list, list]: Feature array, metal indices, metal symbols
         """
         try:
-            feature_matrix, metal_indices, metals = featurize(
-                structure, self.featureset
-            )
+            feature_matrix, metal_indices, metals = featurize(structure, self.featureset)
             return feature_matrix, metal_indices, metals
         except Exception as exception:
             raise FeaturizationError("Could not featurize structure.") from exception
 
-    def run_oximachine(
-        self, structure: Union[str, os.PathLike, Structure, Atoms]
-    ) -> OrderedDict:
+    def run_oximachine(self, structure: Union[str, os.PathLike, Structure, Atoms]) -> OrderedDict:
         """Runs oximachine after attempting to guess what structure is
 
         Args:

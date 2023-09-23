@@ -68,14 +68,10 @@ class VotingClassifier:  # pylint:disable=too-many-instance-attributes
         """Run the probability calibration on all base estimators"""
         self.calibration = method
         self._check_is_fitted()
-        self.estimators = [
-            self._calibrate_model(model, method, X, y) for model in self._estimators
-        ]
+        self.estimators = [self._calibrate_model(model, method, X, y) for model in self._estimators]
         self.calibrated = True
 
-    def _calibrate_model(
-        self, model, method: str, X_valid: np.array, y_valid: np.array
-    ):
+    def _calibrate_model(self, model, method: str, X_valid: np.array, y_valid: np.array):
         """
         Note that we use _CalibratedClassifier to better deal with the label encoding.
 
@@ -89,21 +85,15 @@ class VotingClassifier:  # pylint:disable=too-many-instance-attributes
             _CalibratedClassifier -- calibrated classifier
         """
         if method == "isotonic":
-            calibrated = _CalibratedClassifier(
-                model, method="isotonic", classes=self.classes
-            )
+            calibrated = _CalibratedClassifier(model, method="isotonic", classes=self.classes)
             calibrated.fit(X_valid, y_valid)
         elif method == "sigmoid":
-            calibrated = _CalibratedClassifier(
-                model, method="sigmoid", classes=self.classes
-            )
+            calibrated = _CalibratedClassifier(model, method="sigmoid", classes=self.classes)
             calibrated.fit(X_valid, y_valid)
         elif method == "none":
             calibrated = model
         else:
-            calibrated = _CalibratedClassifier(
-                model, method="sigmoid", classes=self.classes
-            )
+            calibrated = _CalibratedClassifier(model, method="sigmoid", classes=self.classes)
             calibrated.fit(X_valid, y_valid)
 
         return calibrated
@@ -151,7 +141,7 @@ class VotingClassifier:  # pylint:disable=too-many-instance-attributes
         return np.mean(zscore(predictions, axis=-1), axis=-1)
 
     def _collect_probas(self, X):
-        """Collect results from clf.predict calls. """
+        """Collect results from clf.predict calls."""
         if not self.calibrated:
             warnings.warn("Using uncalibrated classififier")
         return np.asarray([clf.predict_proba(X) for clf in self.estimators])
@@ -162,12 +152,10 @@ class VotingClassifier:  # pylint:disable=too-many-instance-attributes
                 raise ValueError("Classifier not fitted")
 
     def _predict_proba(self, X):
-        """Predict class probabilities for X in 'soft' voting """
+        """Predict class probabilities for X in 'soft' voting"""
         self._check_is_fitted()
         if self.voting == "hard":
-            raise AttributeError(
-                "predict_proba is not available when" " voting=%r" % self.voting
-            )
+            raise AttributeError("predict_proba is not available when" " voting=%r" % self.voting)
         avg = np.average(self._collect_probas(X), axis=0, weights=self.weights)
         return avg
 
@@ -209,7 +197,7 @@ class VotingClassifier:  # pylint:disable=too-many-instance-attributes
         return self._predict(X)
 
     def _predict(self, X):
-        """Collect results from clf.predict calls. """
+        """Collect results from clf.predict calls."""
         if not self.calibrated:
             warnings.warn("Using uncalibrated classififier")
         return np.asarray(

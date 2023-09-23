@@ -87,9 +87,7 @@ def download_all():
     """Download model and scaler"""
     for _, v in MODEL_CONFIG.items():
         download_model(v["scaler"]["url"], v["scaler"]["path"], v["scaler"]["md5"])
-        download_model(
-            v["classifier"]["url"], v["classifier"]["path"], v["classifier"]["md5"]
-        )
+        download_model(v["classifier"]["url"], v["classifier"]["path"], v["classifier"]["md5"])
 
 
 def read_pickle(filepath: str):
@@ -121,9 +119,7 @@ class SymbolNameDict:  # pylint: disable=too-few-public-methods
 
     def __init__(self):
         with open(
-            os.path.join(
-                Path(__file__).absolute().parent, "assets", "periodic_table.json"
-            ),
+            os.path.join(Path(__file__).absolute().parent, "assets", "periodic_table.json"),
             "r",
         ) as periodic_table_file:
             self.pt_data = json.load(periodic_table_file)

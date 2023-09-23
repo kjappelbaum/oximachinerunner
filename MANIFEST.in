@@ -1,4 +1,0 @@
-include README.md LICENSE
-include versioneer.py
-include oximachinerunner/_version.py
-recursive-exclude test *
