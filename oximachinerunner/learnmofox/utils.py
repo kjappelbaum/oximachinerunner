@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint:disable=invalid-name
 """Copy of the custom classifier class"""
+
 import warnings
 
 import numpy as np
@@ -151,7 +152,7 @@ class VotingClassifier:  # pylint:disable=too-many-instance-attributes
         return np.mean(zscore(predictions, axis=-1), axis=-1)
 
     def _collect_probas(self, X):
-        """Collect results from clf.predict calls. """
+        """Collect results from clf.predict calls."""
         if not self.calibrated:
             warnings.warn("Using uncalibrated classififier")
         return np.asarray([clf.predict_proba(X) for clf in self.estimators])
@@ -162,7 +163,7 @@ class VotingClassifier:  # pylint:disable=too-many-instance-attributes
                 raise ValueError("Classifier not fitted")
 
     def _predict_proba(self, X):
-        """Predict class probabilities for X in 'soft' voting """
+        """Predict class probabilities for X in 'soft' voting"""
         self._check_is_fitted()
         if self.voting == "hard":
             raise AttributeError(
@@ -209,7 +210,7 @@ class VotingClassifier:  # pylint:disable=too-many-instance-attributes
         return self._predict(X)
 
     def _predict(self, X):
-        """Collect results from clf.predict calls. """
+        """Collect results from clf.predict calls."""
         if not self.calibrated:
             warnings.warn("Using uncalibrated classififier")
         return np.asarray(
