@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.2.3
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: check-yaml
@@ -40,8 +40,8 @@ repos:
   #     - id: mypy
   #       exclude: (versioneer.py|oximachinerunner/_version.py|^docs/)
 
-  - repo: https://github.com/psf/black
-    rev: 20.8b1
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 26.5.1
     hooks:
       - id: black
         language_version: python3
@@ -50,8 +50,8 @@ repos:
         entry: black
         types: [python]
 
-  - repo: https://github.com/pre-commit/mirrors-isort
-    rev: "v5.6.4" # Use the revision sha / tag you want to point at
+  - repo: https://github.com/PyCQA/isort
+    rev: "9.0.1" # Use the revision sha / tag you want to point at
     hooks:
       - id: isort
         name: isort
