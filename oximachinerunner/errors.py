@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Defining custom exceptions for OximachineRunner"""
+
 __all__ = [
     "OximachineRunnerException",
     "NoMetalError",
