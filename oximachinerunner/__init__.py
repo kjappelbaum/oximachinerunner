@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint:disable=wrong-import-position
 """Implements methods to use oximachine as part of a Python package"""
+
 import os
 import sys
 import warnings
@@ -316,10 +317,8 @@ class OximachineRunner:
                 prediction, max_probas, base_predictions
         """
         if not has_metal_sites(structure):
-            warnings.warn(
-                "Oximachine can only predict oxidation states of metals. \
-                    This structure contains no metals."
-            )
+            warnings.warn("Oximachine can only predict oxidation states of metals. \
+                    This structure contains no metals.")
             return EMPTY_PREDICTION
 
         with warnings.catch_warnings():
