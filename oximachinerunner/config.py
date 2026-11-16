@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Configures paths, the available models and the default models"""
+
 import os
 from typing import Any, Dict
 
